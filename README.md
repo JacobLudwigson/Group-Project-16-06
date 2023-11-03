@@ -1,5 +1,8 @@
 # Group-Project-16-06
 
+# https://cuboulder-csci3308.pages.dev/docs/labs/lab10/#7-version-control
+
+
 1. Events meetup website
 
 2. JacobLudwigson,
