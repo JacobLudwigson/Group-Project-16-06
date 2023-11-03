@@ -1,0 +1,44 @@
+CSCI 3308 - Final Project Team 16-06
+
+Team Name
+- GO
+
+Team Members
+- Danny Alba
+- Michael Ellis
+- Jacob Lancaster
+- Jake Ludwigson
+
+Application Name
+- EventGo:)
+
+Application Description
+	An interactive event based interface that allows users to discuss 
+	and plan for future public events. There would be ways for users to
+	discuss plans such as transportation, food, and event details.
+
+Vision Statement
+	Allow community members of Boulder to thrive and prosper by 
+	improving the quality of community interaction with events.
+
+Version Control
+- https://github.com/JacobLudwigson/Group-Project-16-06.git
+
+Developing Methodology
+-
+
+Communication Plan
+- Our team will communicate primarily via discord for this project
+
+Meeting Plan
+	- Team Meetings
+		-- Tuesday @ 1200-1700
+	- Weekly Scrum
+		-- Some time Thursday
+
+Use Case Diagram
+-
+
+Wireframes
+-
+
