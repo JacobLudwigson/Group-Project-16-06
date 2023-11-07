@@ -24,9 +24,6 @@ Vision Statement
 Version Control
 - https://github.com/JacobLudwigson/Group-Project-16-06.git
 
-Developing Methodology
--
-
 Communication Plan
 - Our team will communicate primarily via discord for this project
 
@@ -35,10 +32,3 @@ Meeting Plan
 		-- Tuesday @ 1200-1700
 	- Weekly Scrum
 		-- Some time Thursday
-
-Use Case Diagram
--
-
-Wireframes
--
-
