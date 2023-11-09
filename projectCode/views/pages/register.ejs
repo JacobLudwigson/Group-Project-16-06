@@ -1,7 +1,8 @@
-<%- include ('../partials/head') %> <%- include ('../partials/menu') %>
+<%- include ('../partials/header.ejs') %> <%- include ('../partials/menu.ejs') %>
+<% include ('../../styles.css') %>
+
 <main>
   <div class="container">
-    <div class="col"><%- include ('../partials/message') %></div>
     <form action="/register" method="POST" class = "form-group">
         <label for="name">Username:</label>
         <input type="text" id="username" name="username" class = "form-control"/>
