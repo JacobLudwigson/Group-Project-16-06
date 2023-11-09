@@ -6,8 +6,9 @@ CREATE TABLE users (
 CREATE TABLE comments(
     commentID SERIAL PRIMARY KEY,
     comment VARCHAR(255),
-    eventID INT DISTINCT,
-    CONSTRAINT fk_username FOREIGN KEY(users) REFERENCES username
+    eventID INT,
+    username VARCHAR(50),
+    CONSTRAINT fk_username FOREIGN KEY(username) REFERENCES users
 );
 
 CREATE TABLE profile (
@@ -16,6 +17,7 @@ CREATE TABLE profile (
     last_name VARCHAR(50),
     bio VARCHAR(255),
     profile_pic_path VARCHAR(255), 
-    CONSTRAINT fk_username FOREIGN KEY(users) REFERENCES username
+    username VARCHAR(50),
+    CONSTRAINT fk_username FOREIGN KEY(username) REFERENCES users
 );
 
