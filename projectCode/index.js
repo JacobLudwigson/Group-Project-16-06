@@ -175,17 +175,17 @@ app.get('/discover',(req,res) => {
         },
         params: {
           apikey: process.env.API_KEY,
-          keyword: "Alice in Chains", //you can choose any artist/event here
+          keyword: "Cody", //you can choose any artist/event here
           size: 10 // you can choose the number of events you would like to return
         },
     })
     .then(results => {
           console.log(results.data);
-          res.render('pages/discover', {events : results.data._embedded.events}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+          res.render('pages/discover', {data : results.data._embedded.events}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
         })
     .catch(error => {
           console.log(error);
-          res.render('pages/discover', {events : []});
+          res.render('pages/discover', {data : []});
         });
 });
 
