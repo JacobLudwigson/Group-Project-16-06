@@ -3,7 +3,37 @@
 
 
 <main>
-    <div class = "container-fluid">
+  <div class="container">
+    <table class = "table-striped" width = "100%">
+        <tr style = "font-weight: bold;">
+            <td>
+                Event Name
+            </td>
+            <td>
+                Event Images
+            </td>
+            <td>
+                Date
+            </td>
+            <td>
+                Time
+            </td>
+            <td>
+                Bookings
+            </td>
+        </tr>
+        <% events.forEach(function(event){ %>
+            <tr>
+                <td>
+                    <%- event.name -%>
+                </td>
+                <td>
+                    <% if (event.images[0].url == null) { %>
+                        <img src = "https://gamepedia.cursecdn.com/lolesports_gamepedia_en/thumb/c/c0/University_of_Colorado_Boulderlogo_square.png/1200px-University_of_Colorado_Boulderlogo_square.png" width = "100" height = "100">
+                        <% } %>
+                    <% if (event.images[0].url != null){ %>
+                    <img src = "<%- event.images[0].url -%>" width = "200" height = "200">
+                    <% } %>
 
                 </td>
                 <td>
@@ -22,53 +52,7 @@
         <% }); %>
     </table>
 
-            <!--insert bootstrap card table/explore page based on user interest-->
-
-            <div class="card" style="width: 18rem;">
-                <img src="<%=data[0].images[0].url%>" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title"><%= data[0].name%></h5>
-                  <p class="card-text">One of the <b>greatest</b> shows on Earth.</p>
-                </div>
-                <ul class="list-group list-group-flush" id="c1">
-                  <li class="list-group-item">Date: <%=data[0].dates.start.dateTime%></li>
-                  <li class="list-group-item">Time: <%=data[0].dates.start.hourOfDay%>:<%=data[0].dates.start.minuteOfHour%></li>
-                </ul>
-                <div class="card-body">
-                    <a href="<%=data[0].url%>" class="btn btn-primary">Event Page</a>
-                </div>
-            </div>
-
-            <div class="card" style="width: 18rem;">
-                <img src="<%=data[1].images[0].url%>" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title"><%= data[1].name%></h5>
-                  <p class="card-text">One of the <b>greatest</b> shows on Earth.</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">Date: <%=data[1].dates.start.dateTime%></li>
-                  <li class="list-group-item">Time: <%=data[1].dates.start.hourOfDay%>:<%=data[1].dates.start.minuteOfHour%></li>
-                </ul>
-                <div class="card-body">
-                    <a href="<%=data[1].url%>" class="btn btn-primary">Event Page</a>
-                </div>
-            </div>
-
-            <div class="card" style="width: 18rem;">
-                <img src="<%=data[2].images[0].url%>" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title"><%= data[2].name%></h5>
-                  <p class="card-text">One of the <b>greatest</b> shows on Earth.</p>
-                </div>
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item">Date: <%=data[2].dates.start.dateTime%></li>
-                  <li class="list-group-item">Time: <%=data[2].dates.start.hourOfDay%>:<%=data[2].dates.start.minuteOfHour%></li>
-                </ul>
-                <div class="card-body">
-                    <a href="<%=data[2].url%>" class="btn btn-primary">Event Page</a>
-                </div>
-            </div>
-    </div>
+  </div>
 </main>
 
 <% include('../partials/footer') %>
