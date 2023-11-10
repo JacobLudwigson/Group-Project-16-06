@@ -5,6 +5,22 @@
 <main>
     <div class = "container-fluid">
 
+                </td>
+                <td>
+                    <%- event.dates.start.localDate -%> 
+                </td>
+                <td>
+                    <%- event.dates.start.localTime -%>
+                </td>
+                <td>
+                    <% console.log(event.url); %>
+                    <a href ="<%= event.url %>" class="btn btn-primary" type = "button">
+                        Book Now
+                    </a>
+                </td>
+            </tr>
+        <% }); %>
+    </table>
 
             <!--insert bootstrap card table/explore page based on user interest-->
 
