@@ -117,7 +117,11 @@ app.post('/login', (req, res) => {
                 //save user details in session like in lab 8
                 req.session.user = user;
                 req.session.save();
+<<<<<<< HEAD
+                res.redirect('/profile')
+=======
                 res.redirect('/createProfile')
+>>>>>>> 46a9ef822c5dc01017e0eca61a047cb202ca8c42
             }
             else {
                 res.render('pages/login', {
@@ -131,7 +135,25 @@ app.post('/login', (req, res) => {
             res.render('pages/register');
         });
 });
+<<<<<<< HEAD
+app.get('/profile', (req,res) =>{
+  var query = `SELECT * FROM users WHERE username = '${req.body.username}';`
 
+  db.any(query)
+    .then((data) =>{
+      res.render('pages/profile', {
+        user : data
+      })
+    })
+    .catch((err) =>{
+      console.log(err);
+      res.render('pages/register');
+    });
+
+});
+=======
+
+>>>>>>> 46a9ef822c5dc01017e0eca61a047cb202ca8c42
 const auth = (req, res, next) => {
   if (!req.session.user) {
     // Default to login page.
@@ -210,9 +232,13 @@ app.get('/discover',(req,res) => {
         });
 });
 
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');
