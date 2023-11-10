@@ -117,7 +117,7 @@ app.post('/login', (req, res) => {
                 //save user details in session like in lab 8
                 req.session.user = user;
                 req.session.save();
-                res.redirect('/discover')
+                res.redirect('/profile')
             }
             else {
                 res.render('pages/login', {
@@ -130,6 +130,21 @@ app.post('/login', (req, res) => {
             console.log(err);
             res.render('pages/register');
         });
+});
+app.get('/profile', (req,res) =>{
+  var query = `SELECT * FROM users WHERE username = '${req.body.username}';`
+
+  db.any(query)
+    .then((data) =>{
+      res.render('pages/profile', {
+        user : data
+      })
+    })
+    .catch((err) =>{
+      console.log(err);
+      res.render('pages/register');
+    });
+
 });
 const auth = (req, res, next) => {
     if (!req.session.user) {
@@ -174,9 +189,13 @@ app.get('/discover',(req,res) => {
         });
 });
 
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');
