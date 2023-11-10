@@ -66,6 +66,9 @@ app.get('/', (req, res) => {
     res.redirect('/login'); //this will call the /anotherRoute route in the API
   });
   
+  app.get('/welcome', (req, res) => {
+    res.json({status: 'success', message: 'Welcome!'});
+  });
 // Register
 app.get('/register', function(req,res){
     res.render('pages/register');
@@ -225,9 +228,7 @@ app.get('/discover',(req,res) => {
         });
 });
 
-app.get('/welcome', (req, res) => {
-  res.json({status: 'success', message: 'Welcome!'});
-});
+
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
