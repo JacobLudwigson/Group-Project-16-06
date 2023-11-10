@@ -117,7 +117,11 @@ app.post('/login', (req, res) => {
                 //save user details in session like in lab 8
                 req.session.user = user;
                 req.session.save();
+<<<<<<< HEAD
                 res.redirect('/profile')
+=======
+                res.redirect('/createProfile')
+>>>>>>> 46a9ef822c5dc01017e0eca61a047cb202ca8c42
             }
             else {
                 res.render('pages/login', {
@@ -131,6 +135,7 @@ app.post('/login', (req, res) => {
             res.render('pages/register');
         });
 });
+<<<<<<< HEAD
 app.get('/profile', (req,res) =>{
   var query = `SELECT * FROM users WHERE username = '${req.body.username}';`
 
@@ -146,16 +151,54 @@ app.get('/profile', (req,res) =>{
     });
 
 });
+=======
+
+>>>>>>> 46a9ef822c5dc01017e0eca61a047cb202ca8c42
 const auth = (req, res, next) => {
-    if (!req.session.user) {
-      // Default to login page.
-      return res.redirect('/login');
-    }
-    next();
-  };
-  
-  // Authentication Required
+  if (!req.session.user) {
+    // Default to login page.
+    return res.redirect('/login');
+  }
+  next();
+};
+
+// Authentication Required
 app.use(auth);
+app.get('/createProfile', function(req,res){
+  res.render('pages/createProfile');
+});
+app.post('/createProfile', (req,res) => {
+  var query = `INSERT INTO profiles (username,first_name, last_name, profile_pic_path,bio) VALUES 
+  ('${req.session.user.username}', '${req.body.first_name}','${req.body.last_name}', '${req.body.profilePic}', '${req.body.bio}') returning *;`
+
+  db.any(query)
+    .then((data) =>{
+      // console.log(data[0].username);
+      res.redirect('/profile');
+    })
+    .catch((err) =>{
+      console.log(err);
+      res.render('pages/register');
+    });
+})
+app.get('/profile', (req,res) =>{
+  var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+
+  db.any(query)
+    .then((data) =>{
+      console.log(data[0]);
+      res.render('pages/profile', {
+        user : data[0],
+      });
+    })
+    .catch((err) =>{
+      console.log("Error handler");
+      console.log(err);
+      res.render('pages/register');
+    });
+
+});
+
 
 app.get('/logout', (req,res)=>{
     req.session.destroy();
@@ -181,11 +224,11 @@ app.get('/discover',(req,res) => {
     })
     .then(results => {
           console.log(results.data);
-          res.render('pages/discover', {data : results.data._embedded.events}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+          res.render('pages/discover', {events : results.data._embedded.events}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
         })
     .catch(error => {
           console.log(error);
-          res.render('pages/discover', {data : []});
+          res.render('pages/discover', {events : []});
         });
 });
 
