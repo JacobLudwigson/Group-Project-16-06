@@ -117,7 +117,7 @@ app.post('/login', (req, res) => {
                 //save user details in session like in lab 8
                 req.session.user = user;
                 req.session.save();
-                res.redirect('/profile')
+                res.redirect('/createProfile')
             }
             else {
                 res.render('pages/login', {
@@ -131,31 +131,52 @@ app.post('/login', (req, res) => {
             res.render('pages/register');
         });
 });
-app.get('/profile', (req,res) =>{
-  var query = `SELECT * FROM users WHERE username = '${req.body.username}';`
+
+const auth = (req, res, next) => {
+  if (!req.session.user) {
+    // Default to login page.
+    return res.redirect('/login');
+  }
+  next();
+};
+
+// Authentication Required
+app.use(auth);
+app.get('/createProfile', function(req,res){
+  res.render('pages/createProfile');
+});
+app.post('/createProfile', (req,res) => {
+  var query = `INSERT INTO profiles (username,first_name, last_name, profile_pic_path,bio) VALUES 
+  ('${req.session.user.username}', '${req.body.first_name}','${req.body.last_name}', '${req.body.profilePic}', '${req.body.bio}') returning *;`
 
   db.any(query)
     .then((data) =>{
-      res.render('pages/profile', {
-        user : data
-      })
+      // console.log(data[0].username);
+      res.redirect('/profile');
     })
     .catch((err) =>{
       console.log(err);
       res.render('pages/register');
     });
+})
+app.get('/profile', (req,res) =>{
+  var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+
+  db.any(query)
+    .then((data) =>{
+      console.log(data[0]);
+      res.render('pages/profile', {
+        user : data[0],
+      });
+    })
+    .catch((err) =>{
+      console.log("Error handler");
+      console.log(err);
+      res.render('pages/register');
+    });
 
 });
-const auth = (req, res, next) => {
-    if (!req.session.user) {
-      // Default to login page.
-      return res.redirect('/login');
-    }
-    next();
-  };
-  
-  // Authentication Required
-app.use(auth);
+
 
 app.get('/logout', (req,res)=>{
     req.session.destroy();
