@@ -1,0 +1,26 @@
+<%- include ('../partials/head') %>
+<%- include ('../partials/menu') %>
+
+<main>
+    <div class="container">
+      <form action="/createProfile" method="POST" class = "form-group" style = "padding-top: 5%;">
+
+          <label for="profilePic">Profile Picture:</label>
+          <input type="url" id="profilePic" name="profilePic" class = "form-control"/>
+
+          <label for="first_name">First Name: </label>
+          <input type="first_name" id="first_name" name="first_name" class = "form-control"/>
+
+          <label for="last_name">Last Name:</label>
+          <input type="last_name" id="last_name" name="last_name" class = "form-control"/>
+
+          <label for="bio">Bio:</label>
+          <input type="bio" id="bio" name="bio" class = "form-control"/>
+        
+          <input type="submit" value="Create" class="btn btn-primary" />
+        </form>
+    </div>
+  </main>
+
+<% include('../partials/footer') %>
+
