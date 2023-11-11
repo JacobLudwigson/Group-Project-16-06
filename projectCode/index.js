@@ -25,6 +25,8 @@ const dbConfig = {
 
 const db = pgp(dbConfig);
 
+const all_comments = `SELECT comment FROM comments;`;
+
 // test your database
 db.connect()
   .then(obj => {
@@ -208,6 +210,28 @@ app.get('/discover',(req,res) => {
           res.render('pages/discover', {events : []});
         });
 });
+
+app.get('/event', async (req, res) => {
+
+
+  db.any(all_comments)
+
+    .then((comment) => {
+      res.render('pages/event', {
+        comment
+      });
+    })
+  });
+
+app.post('/event', function (req,res) {
+  const query = 'INSERT INTO comments (comment) VALUES ($1) RETURNING *;';
+
+  db.any(query, [req.body.comment,])
+
+  res.redirect('/event');
+});
+
+
 
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
