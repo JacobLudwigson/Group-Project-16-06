@@ -11,7 +11,7 @@
       <div class="col-md-5 border-right">
           <div class="p-3 py-5">
               <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h4 class="text-right">Profile</h4>
+                  <h4 class="text-right">Profile : <%-user.username%></h4>
               </div>
               <div class="row mt-2">
                   <div class="col-md-6"><label class="labels">First Name</label><input type="first_name" id="first_name" name="first_name" class = "form-control" placeholder="<%-user.first_name%>" disabled/></div>
@@ -21,7 +21,7 @@
                   <div class="col-md-12"><label class="labels">Biography</label><input type="bio" id="bio" name="bio" class = "form-control" value = "<%-user.bio-%>" disabled/></div>
                   <div class="col-md-12"><label class="labels">Profile Picture</label><input type="url" id="profilePic" name="profilePic" class = "form-control" value = "<%-user.profile_pic_path-%>" disabled/></div>
                   <div class="col-md-6"><label class="labels">State</label><input type="text" class="form-control" id = "state" name ="state" value = "<%-user.state-%>" disabled></div>
-                  <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" id = "Country" name = "Country" value = "<%-user.Country-%>" disabled></div>                </div>
+                  <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" id = "Country" name = "Country" value = "<%-user.country-%>" disabled></div>                </div>
               <div class="mt-5 text-center">
                 <a class="btn btn-primary profile-button" href = "/editProfile" role="button">
                   Edit Profile
