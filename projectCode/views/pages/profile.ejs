@@ -1,61 +1,43 @@
 <%- include ('../partials/head') %>
 <%- include ('../partials/menu') %>
+
 <main>
-    <div class = "container" style = "padding-top: 5%;">
+
+<div class="container rounded bg-grey mt-5 mb-5">
+  <div class="row">
+      <div class="col-md-3 border-right">
+          <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img class="rounded-circle mt-5" width="150px" src = "<%-user.profile_pic_path%>" alt="Profile Picture"><span class="font-weight-bold"><%-user.username %></span><span class="text-black-50"></span><span> </span></div>
+      </div>
+      <div class="col-md-5 border-right">
+          <div class="p-3 py-5">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h4 class="text-right">Profile</h4>
+              </div>
+              <div class="row mt-2">
+                  <div class="col-md-6"><label class="labels">First Name</label><input type="first_name" id="first_name" name="first_name" class = "form-control" placeholder="<%-user.first_name%>" disabled/></div>
+                  <div class="col-md-6"><label class="labels">Last Name</label><input type="last_name" id="last_name" name="last_name" class = "form-control" placeholder = "<%-user.last_name%>" disabled/></div>
+              </div>
+              <div class="row mt-3">
+                  <div class="col-md-12"><label class="labels">Biography</label><input type="bio" id="bio" name="bio" class = "form-control" value = "<%-user.bio-%>" disabled/></div>
+                  <div class="col-md-12"><label class="labels">Profile Picture</label><input type="url" id="profilePic" name="profilePic" class = "form-control" value = "<%-user.profile_pic_path-%>" disabled/></div>
+                  <div class="col-md-6"><label class="labels">State</label><input type="text" class="form-control" id = "state" name ="state" value = "<%-user.state-%>" disabled></div>
+                  <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" id = "Country" name = "Country" value = "<%-user.Country-%>" disabled></div>                </div>
+              <div class="mt-5 text-center">
+                <a class="btn btn-primary profile-button" href = "/editProfile" role="button">
+                  Edit Profile
+                </a>
+            </div>
+          </div>
+      </div>
       
-        <div class = "container">
-          <img src = <%-user.profile_pic_path %>  width = "200px" height = "200px"/>
-          <div>
-            <h1><%- user.username %></h1>
+      <div class="col-md-4">
+          <div class="p-3 py-5">
           </div>
-        </div>
-        
-        <div id="accordion" >
-          <div class="card">
-            <div class="card-header" id="headingOne">
-              <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                  User Biography
-                </button>
-              </h5>
-            </div>
-        
-            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-              <div class="card-body">
-                <%- user.bio %>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header" id="headingTwo">
-              <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                  Pinned Events
-                </button>
-              </h5>
-            </div>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-              <div class="card-body">
-                Here Will be a list of pinned events possibly with hrefs to the event page
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header" id="headingThree">
-              <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                  Transportation information?
-                </button>
-              </h5>
-            </div>
-            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-              <div class="card-body">
-                List transportation information
-              </div>
-            </div>
-          </div>
-        </div>
-    </div>
+      </div>
+  </div>
+</div>
+</div>
+</div>
 </main>
 
 <% include('../partials/footer') %>
