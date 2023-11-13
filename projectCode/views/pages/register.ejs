@@ -1,20 +1,15 @@
-
-<%- include ('../partials/head') %>
+<%- include ('../partials/head') %> 
 <%- include ('../partials/menu') %>
-
-
-
 <main>
-  <div class= "container">
-    <div class="col"><%- include ('../partials/message') %></div>
-    <form action="/login" method="POST" class = "form-group">
+  <div class="container">
+    <form action="/register" method="POST" class = "form-group">
         <label for="name">Username:</label>
         <input type="text" id="username" name="username" class = "form-control"/>
       
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" class = "form-control"/>
       
-        <input type="submit" value="Login" class="btn btn-primary" />
+        <input type="submit" value="Register" class="btn btn-primary" />
       </form>
   </div>
 </main>
