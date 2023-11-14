@@ -13,38 +13,32 @@
                 Event Images
             </td>
             <td>
-                Date
-            </td>
-            <td>
-                Time
+                Date/Time
             </td>
             <td>
                 Bookings
             </td>
         </tr>
-        <% events.forEach(function(event){ %>
+        <% events.events.forEach(events =>{ %>
             <tr>
                 <td>
-                    <%- event.name -%>
+                    <%- events.venue.name -%>
                 </td>
                 <td>
-                    <% if (event.images[0].url == null) { %>
+                    <% if (events.performers[0].image == null) { %>
                         <img src = "https://gamepedia.cursecdn.com/lolesports_gamepedia_en/thumb/c/c0/University_of_Colorado_Boulderlogo_square.png/1200px-University_of_Colorado_Boulderlogo_square.png" width = "100" height = "100">
                         <% } %>
-                    <% if (event.images[0].url != null){ %>
-                    <img src = "<%- event.images[0].url -%>" width = "200" height = "200">
+                    <% if (events.performers[0].image != null){ %>
+                    <img src = "<%- events.performers[0].image -%>" width = "200" height = "200">
                     <% } %>
 
                 </td>
                 <td>
-                    <%- event.dates.start.localDate -%> 
+                    <%- events.datetime_utc -%> 
                 </td>
                 <td>
-                    <%- event.dates.start.localTime -%>
-                </td>
-                <td>
-                    <% console.log(event.url); %>
-                    <a href ="<%= event.url %>" class="btn btn-primary" type = "button">
+                    <% console.log(events.venue.url); %>
+                    <a href ="<%= events.venue.url %>" class="btn btn-primary" type = "button">
                         Book Now
                     </a>
                 </td>

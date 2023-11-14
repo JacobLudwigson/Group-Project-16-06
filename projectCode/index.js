@@ -79,15 +79,39 @@ app.post('/register', async (req, res) => {
     //hash the password using bcrypt library
     const hash = await bcrypt.hash(req.body.password, 10);
   
+    
     // To-DO: Insert username and hashed password into the 'users' table
     var query = `INSERT INTO users (username, password) VALUES ('${req.body.username}' , '${hash}');`
     var profQuery = `INSERT INTO profiles (username) VALUES ('${req.body.username}');`
+    var userQuery = `SELECT * FROM users WHERE username = '${req.body.username}';`
+
     db.any(query)
         .then(function(){
           db.any(profQuery)
           .then(()=>{
-            res.status(200);
-            res.redirect('/login');
+            db.one(userQuery)
+            .then(async function(user){
+                const match = await bcrypt.compare(req.body.password, user.password);
+                if (match){
+                    //save user details in session like in lab 8
+                    req.session.user = user;
+                    req.session.save();
+                    res.status(200);
+                    res.redirect('/editProfile');
+                }
+                else {
+                  res.status(400);
+                    res.render('pages/login', {
+                        error: true,
+                        message : "Incorrect Username/Password",
+                    });
+                }
+            })
+            .catch((err) => {
+                res.status(401);
+                console.log(err);
+                res.render('pages/register');
+            });
           })
           .catch((err) =>{
             res.status(400);
@@ -125,7 +149,7 @@ app.post('/login', (req, res) => {
                 req.session.user = user;
                 req.session.save();
                 res.status(200);
-                res.redirect('/editProfile');
+                res.redirect('/discover');
             }
             else {
               res.status(400);
@@ -217,19 +241,18 @@ app.get('/logout', (req,res)=>{
 })
 app.get('/discover',(req,res) => {
 
-    axios({
-        url: `https://api.seatgeek.com/2/events`,
-        method: 'GET',
-        dataType: 'json',
-        headers: {
-          'X-RapidAPI-Key': 'c1683c1059msh165987118f5c98ap15d64cjsn53ca6dfa5530',
-          'X-RapidAPI-Host': 'seatgeek-seatgeekcom.p.rapidapi.com'
-        },
-        params: {
-          apikey: process.env.API_KEY,
-          //q: "Cody", //you can choose any artist/event here
-        },
-    })
+  axios({
+    url: `https://api.seatgeek.com/2/events`,
+    method: 'GET',
+    dataType: 'json',
+    headers: {
+      'Accept-Encoding': 'application/json',
+    },
+    params: {
+      client_id: process.env.API_KEY,
+      q: `Cody Jinks`
+    }
+  })
     .then(results => {
           console.log(results.data);
           res.render('pages/discover', {events : results.data}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
