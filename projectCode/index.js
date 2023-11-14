@@ -283,7 +283,9 @@ app.post('/event', function (req,res) {
   res.redirect('/event');
 });
 
-
+app.get('/map', function(req,res){
+  res.render('pages/map');
+})
 
 
 
