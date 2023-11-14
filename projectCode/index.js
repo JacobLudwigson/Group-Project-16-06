@@ -79,15 +79,39 @@ app.post('/register', async (req, res) => {
     //hash the password using bcrypt library
     const hash = await bcrypt.hash(req.body.password, 10);
   
+    
     // To-DO: Insert username and hashed password into the 'users' table
     var query = `INSERT INTO users (username, password) VALUES ('${req.body.username}' , '${hash}');`
     var profQuery = `INSERT INTO profiles (username) VALUES ('${req.body.username}');`
+    var userQuery = `SELECT * FROM users WHERE username = '${req.body.username}';`
+
     db.any(query)
         .then(function(){
           db.any(profQuery)
           .then(()=>{
-            res.status(200);
-            res.redirect('/login');
+            db.one(userQuery)
+            .then(async function(user){
+                const match = await bcrypt.compare(req.body.password, user.password);
+                if (match){
+                    //save user details in session like in lab 8
+                    req.session.user = user;
+                    req.session.save();
+                    res.status(200);
+                    res.redirect('/editProfile');
+                }
+                else {
+                  res.status(400);
+                    res.render('pages/login', {
+                        error: true,
+                        message : "Incorrect Username/Password",
+                    });
+                }
+            })
+            .catch((err) => {
+                res.status(401);
+                console.log(err);
+                res.render('pages/register');
+            });
           })
           .catch((err) =>{
             res.status(400);
@@ -125,7 +149,7 @@ app.post('/login', (req, res) => {
                 req.session.user = user;
                 req.session.save();
                 res.status(200);
-                res.redirect('/editProfile');
+                res.redirect('/discover');
             }
             else {
               res.status(400);
