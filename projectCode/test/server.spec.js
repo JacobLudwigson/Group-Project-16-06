@@ -25,4 +25,44 @@ describe('Server!', () => {
 
   // ===========================================================================
   // TO-DO: Part A Login unit test case
+  it('positive : /resgister', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({username : "Jake", password : "password"})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
+  it('Negative : /register. Checking already stored user', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({username : "Jake", password : "blahblah"})
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        done();
+      });
+  });
+  it('positive : /login correct username/password', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username : "Jake", password : "password"})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
+  it('Negative : /login. Checking correct username invalid password', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username : "Jake", password : "password1"})
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        done();
+      });
+  });
 });

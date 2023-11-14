@@ -25,6 +25,8 @@ const dbConfig = {
 
 const db = pgp(dbConfig);
 
+const all_comments = `SELECT comment FROM comments;`;
+
 // test your database
 db.connect()
   .then(obj => {
@@ -65,10 +67,10 @@ app.use(
 app.get('/', (req, res) => {
     res.redirect('/login'); //this will call the /anotherRoute route in the API
   });
-  
-  app.get('/welcome', (req, res) => {
+app.get('/welcome', (req, res) => {
     res.json({status: 'success', message: 'Welcome!'});
   });
+  
 // Register
 app.get('/register', function(req,res){
     res.render('pages/register');
@@ -79,12 +81,25 @@ app.post('/register', async (req, res) => {
   
     // To-DO: Insert username and hashed password into the 'users' table
     var query = `INSERT INTO users (username, password) VALUES ('${req.body.username}' , '${hash}');`
-
+    var profQuery = `INSERT INTO profiles (username) VALUES ('${req.body.username}');`
     db.any(query)
         .then(function(){
+          db.any(profQuery)
+          .then(()=>{
+            res.status(200);
             res.redirect('/login');
+          })
+          .catch((err) =>{
+            res.status(400);
+            console.log(err)
+            res.render('pages/register', {
+              error : true,
+              message : "Failed to register",
+            }); 
+          })
         })
         .catch((err) => {
+          res.status(400);
             console.log(err)
             res.render('pages/register', {
               error : true,
@@ -102,17 +117,6 @@ app.post('/login', (req, res) => {
 
     var query = `SELECT * FROM users WHERE username = '${req.body.username}';`
     
-    
-    // check if password from request matches with password in DB
-    // if(!match){
-    //     console.log(err);
-    //     res.redirect('/register');
-    // }
-    // else{
-    //     req.session.user = user;
-    //     req.session.save();
-    //     res.redirect('/discover');
-    // }
     db.one(query)
         .then(async function(user){
             const match = await bcrypt.compare(req.body.password, user.password);
@@ -120,9 +124,11 @@ app.post('/login', (req, res) => {
                 //save user details in session like in lab 8
                 req.session.user = user;
                 req.session.save();
-                res.redirect('/createProfile')
+                res.status(200);
+                res.redirect('/editProfile');
             }
             else {
+              res.status(400);
                 res.render('pages/login', {
                     error: true,
                     message : "Incorrect Username/Password",
@@ -130,26 +136,11 @@ app.post('/login', (req, res) => {
             }
         })
         .catch((err) => {
+            res.status(401);
             console.log(err);
             res.render('pages/register');
         });
 });
-app.get('/profile', (req,res) =>{
-  var query = `SELECT * FROM users WHERE username = '${req.body.username}';`
-
-  db.any(query)
-    .then((data) =>{
-      res.render('pages/profile', {
-        user : data
-      })
-    })
-    .catch((err) =>{
-      console.log(err);
-      res.render('pages/register');
-    });
-
-});
-
 const auth = (req, res, next) => {
   if (!req.session.user) {
     // Default to login page.
@@ -160,35 +151,56 @@ const auth = (req, res, next) => {
 
 // Authentication Required
 app.use(auth);
-app.get('/createProfile', function(req,res){
-  res.render('pages/createProfile');
-});
-app.post('/createProfile', (req,res) => {
-  var query = `INSERT INTO profiles (username,first_name, last_name, profile_pic_path,bio) VALUES 
-  ('${req.session.user.username}', '${req.body.first_name}','${req.body.last_name}', '${req.body.profilePic}', '${req.body.bio}') returning *;`
+app.get('/editProfile', function(req,res){
+  var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
 
   db.any(query)
-    .then((data) =>{
-      // console.log(data[0].username);
-      res.redirect('/profile');
+    .then((data)=>{
+      res.status(200);
+      res.render('pages/editProfile', {
+        user : data[0]
+      });
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.status(400);
+      res.render('pages/profile')
+    })
+});
+app.post('/editProfile', (req,res) => {
+  var query = `UPDATE profiles
+  SET first_name = '${req.body.first_name}',
+  last_name = '${req.body.last_name}',
+  profile_pic_path = '${req.body.profilePic}',
+  bio = '${req.body.bio}',
+  state = '${req.body.state}',
+  Country = '${req.body.Country}'
+  WHERE username = '${req.session.user.username}';`
+
+  var Tusername = req.session.user.username;
+  db.any(query)
+    .then(() =>{
+      res.status(200);
+      res.redirect('/profile' + "?username=" + Tusername);
     })
     .catch((err) =>{
+      res.status(400);
       console.log(err);
       res.render('pages/register');
     });
 })
 app.get('/profile', (req,res) =>{
-  var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+  var query = `SELECT * FROM profiles WHERE username = '${req.query.username}';`
 
   db.any(query)
     .then((data) =>{
-      console.log(data[0]);
+      res.status(200);
       res.render('pages/profile', {
-        user : data[0],
+        user : data[0]
       });
     })
     .catch((err) =>{
-      console.log("Error handler");
+      res.status(404);
       console.log(err);
       res.render('pages/register');
     });
@@ -227,6 +239,28 @@ app.get('/discover',(req,res) => {
           res.render('pages/discover', {events : []});
         });
 });
+
+app.get('/event', async (req, res) => {
+
+
+  db.any(all_comments)
+
+    .then((comment) => {
+      res.render('pages/event', {
+        comment
+      });
+    })
+  });
+
+app.post('/event', function (req,res) {
+  const query = 'INSERT INTO comments (comment) VALUES ($1) RETURNING *;';
+
+  db.any(query, [req.body.comment,])
+
+  res.redirect('/event');
+});
+
+
 
 
 

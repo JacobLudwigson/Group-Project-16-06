@@ -2,11 +2,28 @@
 <%- include ('../partials/menu') %>
 
 <main>
-    <div class = "container">
-        <table class = "table-striped">
-            <!--insert bootstrap card table/explore page based on user interest-->
-        </table>
+  <div class="container">
+    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+    <h1>Comments</h1>
+    <hr/>
+    <div class="overflow-auto">
+    <div class="row">
+      <div class="col-sm" height="200">
+        <% comment.forEach(element => {%>
+          <body><br> <%= element.comment %></body>
+          <hr/>
+        <% }) %>
+      </div>
     </div>
+  </div>
+    <form action="/register" method="POST" style="margin-bottom: 120px">
+      <div class="mb-3">
+        <label for="comment">Add a comment</label>
+        <input type="text" id="comment" name="comment"/>
+      </div>
+      <button type="submit" value="comment">Submit</button>
+    </form>
+  </div>
 </main>
 
-<% include('../partials/footer') %>
+<%- include ('../partials/footer') %>

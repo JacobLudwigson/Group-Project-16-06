@@ -16,9 +16,10 @@ CREATE TABLE profiles (
     first_name VARCHAR(50),
     last_name VARCHAR(50),
     bio VARCHAR(255),
-    profile_pic_path VARCHAR(255), 
+    profile_pic_path VARCHAR(255) DEFAULT 'https://zultimate.com/wp-content/uploads/2019/12/default-profile.png', 
     username VARCHAR(50),
+    state VARCHAR(50),
+    Country VARCHAR(50),
     CONSTRAINT fk_username FOREIGN KEY(username) REFERENCES users
 );
-
 

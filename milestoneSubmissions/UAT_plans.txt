@@ -1,0 +1,16 @@
+User Login
+- Can only login using ONLY username
+- Can only login using registered password
+- Login should redirect to Register if indicated user does not exist
+- Login should state failure when incorrect cridentials used
+- Login should denote "Incorrect username OR password"
+- Login should redirect to Discover page
+
+Discover Page
+- Should show 3 cards with hot events
+- User can select an event on page via click
+
+Event Discussion
+- User should be able to add comments to event
+- New comments should be saved and accessible in the future
+- User is able to collapse the Event Discussion
