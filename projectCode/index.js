@@ -254,7 +254,6 @@ app.get('/discover',(req,res) => {
     }
   })
     .then(results => {
-          console.log(results.data);
           res.render('pages/discover', {events : results.data}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
         })
     .catch(error => {
