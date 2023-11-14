@@ -2,8 +2,134 @@
 <%- include ('../partials/menu') %>
 
 
-<main>
-  <div class="container">
+<main style="color: rgb(255, 255, 255);">
+
+    <table class="table" style="max-width: 100%; padding: 70px 0;">
+        <thead>
+          <tr>
+            <th scope="col">
+                <div class="card" style="width: 18rem; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <img src="<%-events.events[0].performers[0].image-%>" class="card-img-top" alt="https://gamepedia.cursecdn.com/lolesports_gamepedia_en/thumb/c/c0/University_of_Colorado_Boulderlogo_square.png/1200px-University_of_Colorado_Boulderlogo_square.png" width = "100" height = "100">
+                    <div class="card-body">
+                      <h5 class="card-title"><%-events.events[0].performers[0].name-%></h5>
+                      <p class="card-text"><%-events.events[0].venue.name-%><br><%-events.events[0].venue.display_location-%></p>
+                    </div>
+                    <ul class="list-group list-group-flush">   
+                        <%date0 = new Date(events.events[0].datetime_utc)%>
+
+                      <li class="list-group-item"><%-date0.toString()-%></li>
+                      <li class="list-group-item"><%-events.events[0].venue.capacity-%>p Capacity</li>
+            
+                    </ul>
+                    <div class="card-body">
+                      <a href="<%-events.events[0].performers[0].url-%>" class="card-link">Purchase <%-events.events[0].performers[0].name-%> Tickets</a>
+                    </div>
+                  </div>
+            </th>
+            <th scope="col">
+                <div class="card" style="width: 18rem; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <img src="<%-events.events[1].performers[0].image-%>" class="card-img-top" alt="https://gamepedia.cursecdn.com/lolesports_gamepedia_en/thumb/c/c0/University_of_Colorado_Boulderlogo_square.png/1200px-University_of_Colorado_Boulderlogo_square.png" width = "100" height = "100">
+                    <div class="card-body">
+                      <h5 class="card-title"><%-events.events[1].performers[0].name-%></h5>
+                      <p class="card-text"><%-events.events[1].venue.name-%><br><%-events.events[1].venue.display_location-%></p>
+                    </div>
+                    <ul class="list-group list-group-flush">   
+            
+                        <%date = new Date(events.events[1].datetime_utc)%>
+
+                      <li class="list-group-item"><%-date.toString()-%></li>
+                      <li class="list-group-item"><%-events.events[1].venue.capacity-%>p Capacity</li>
+            
+                    </ul>
+                    <div class="card-body">
+                      <a href="<%-events.events[1].performers[0].url-%>" class="card-link">Purchase <%-events.events[1].performers[0].name-%> Tickets</a>
+                    </div>
+                  </div>
+            </th>
+            <th scope="col">
+                <div class="card" style="width: 18rem; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <img src="<%-events.events[2].performers[0].image-%>" class="card-img-top" alt="https://gamepedia.cursecdn.com/lolesports_gamepedia_en/thumb/c/c0/University_of_Colorado_Boulderlogo_square.png/1200px-University_of_Colorado_Boulderlogo_square.png" width = "100" height = "100">
+                    <div class="card-body">
+                      <h5 class="card-title"><%-events.events[2].performers[0].name-%></h5>
+                      <p class="card-text"><%-events.events[2].venue.name-%><br><%-events.events[2].venue.display_location-%></p>
+                    </div>
+                    <ul class="list-group list-group-flush">   
+            
+                        <%date = new Date(events.events[2].datetime_utc)%>
+
+                      <li class="list-group-item"><%-date.toString()-%></li>
+                      <li class="list-group-item"><%-events.events[2].venue.capacity-%>p Capacity</li>
+            
+                    </ul>
+                    <div class="card-body">
+                      <a href="<%-events.events[2].performers[0].url-%>" class="card-link">Purchase <%-events.events[2].performers[0].name-%> Tickets</a>
+                    </div>
+                  </div>
+            </th>
+            <th scope="col">
+                <div class="card" style="width: 18rem; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <img src="<%-events.events[3].performers[0].image-%>" class="card-img-top" alt="https://gamepedia.cursecdn.com/lolesports_gamepedia_en/thumb/c/c0/University_of_Colorado_Boulderlogo_square.png/1200px-University_of_Colorado_Boulderlogo_square.png" width = "100" height = "100">
+                    <div class="card-body">
+                      <h5 class="card-title"><%-events.events[3].performers[0].name-%></h5>
+                      <p class="card-text"><%-events.events[3].venue.name-%><br><%-events.events[3].venue.display_location-%></p>
+                    </div>
+                    <ul class="list-group list-group-flush">   
+            
+                        <%date = new Date(events.events[3].datetime_utc)%>
+
+                      <li class="list-group-item"><%-date.toString()-%></li>
+                      <li class="list-group-item"><%-events.events[3].venue.capacity-%>p Capacity</li>
+            
+                    </ul>
+                    <div class="card-body">
+                      <a href="<%-events.events[3].performers[0].url-%>" class="card-link">Purchase <%-events.events[3].performers[0].name-%> Tickets</a>
+                    </div>
+                  </div>
+            </th>
+            <th scope="col">
+                <div class="card" style="width: 18rem; border-style: solid; border-color: rgb(0, 0, 0);">
+                    <img src="<%-events.events[4].performers[0].image-%>" class="card-img-top" alt="https://gamepedia.cursecdn.com/lolesports_gamepedia_en/thumb/c/c0/University_of_Colorado_Boulderlogo_square.png/1200px-University_of_Colorado_Boulderlogo_square.png" width = "100" height = "100">
+                    <div class="card-body">
+                      <h5 class="card-title"><%-events.events[0].performers[0].name-%></h5>
+                      <p class="card-text"><%-events.events[4].venue.name-%><br><%-events.events[4].venue.display_location-%></p>
+                    </div>
+                    <ul class="list-group list-group-flush">   
+            
+                        <%date = new Date(events.events[4].datetime_utc)%>
+
+                      <li class="list-group-item"><%-date.toString()-%></li>
+                      <li class="list-group-item"><%-events.events[4].venue.capacity-%>p Capacity</li>
+            
+                    </ul>
+                    <div class="card-body">
+                      <a href="<%-events.events[4].performers[0].url-%>" class="card-link">Purchase <%-events.events[4].performers[0].name-%> Tickets</a>
+                    </div>
+                  </div>
+            </th>
+          </tr>
+        </thead>
+    </table>
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <% /* %>
     <table class = "table-striped" width = "100%">
         <tr style = "font-weight: bold;">
             <td>
@@ -45,6 +171,8 @@
             </tr>
         <% }); %>
     </table>
+
+    <% */ %>
 
   </div>
 </main>
