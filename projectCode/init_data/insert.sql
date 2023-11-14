@@ -1,0 +1,5 @@
+INSERT INTO users (username, password) VALUES
+('Dan', '123');
+
+INSERT INTO comments (comment, eventID, username) VALUES
+('Cool event', '6206310', 'Dan')
