@@ -16,9 +16,8 @@
       </div>
     </div>
   </div>
-    <form action="/register" method="POST" style="margin-bottom: 120px">
+    <form action="<%-"/event" + "?eventID=" + eID-%>" method="POST" style="margin-bottom: 120px">
       <div class="mb-3">
-        <label for="comment">Add a comment</label>
         <input type="text" id="comment" name="comment"/>
       </div>
       <button type="submit" value="comment">Submit</button>

@@ -265,22 +265,24 @@ app.get('/discover',(req,res) => {
 
 app.get('/event', async (req, res) => {
 
-
-  db.any(all_comments)
-
+  const eID = req.query.eventID
+  const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
+  db.any(query)
     .then((comment) => {
+      console.log(eID);
       res.render('pages/event', {
-        comment
+        comment,
+        eID,
       });
     })
   });
 
 app.post('/event', function (req,res) {
-  const query = 'INSERT INTO comments (comment) VALUES ($1) RETURNING *;';
+  const query = `INSERT INTO comments (comment, eventID, username) VALUES ($1,'${req.query.eventID}', '${req.session.user.username}') RETURNING *;`;
 
   db.any(query, [req.body.comment,])
 
-  res.redirect('/event');
+  res.redirect('/event' + '?eventID=' + req.query.eventID);
 });
 
 
