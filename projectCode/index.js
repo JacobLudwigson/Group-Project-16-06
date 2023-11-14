@@ -206,21 +206,21 @@ app.get('/logout', (req,res)=>{
 app.get('/discover',(req,res) => {
 
     axios({
-        url: `https://app.ticketmaster.com/discovery/v2/events.json`,
+        url: `https://api.seatgeek.com/2/events`,
         method: 'GET',
         dataType: 'json',
         headers: {
-          'Accept-Encoding': 'application/json',
+          'X-RapidAPI-Key': 'c1683c1059msh165987118f5c98ap15d64cjsn53ca6dfa5530',
+          'X-RapidAPI-Host': 'seatgeek-seatgeekcom.p.rapidapi.com'
         },
         params: {
           apikey: process.env.API_KEY,
-          keyword: "Cody", //you can choose any artist/event here
-          size: 10 // you can choose the number of events you would like to return
+          //q: "Cody", //you can choose any artist/event here
         },
     })
     .then(results => {
           console.log(results.data);
-          res.render('pages/discover', {events : results.data._embedded.events}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+          res.render('pages/discover', {events : results.data}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
         })
     .catch(error => {
           console.log(error);
