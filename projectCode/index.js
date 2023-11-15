@@ -250,7 +250,7 @@ app.get('/discover',(req,res) => {
     },
     params: {
       client_id: process.env.API_KEY,
-      q: `Cody Jinks`
+      q: `Cody`
     }
   })
     .then(results => {
