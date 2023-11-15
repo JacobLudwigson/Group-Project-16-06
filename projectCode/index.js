@@ -262,6 +262,34 @@ app.get('/discover',(req,res) => {
         });
 });
 
+app.post('/discover',(req,res) => {
+
+  var search = req.body.search;
+
+  axios({
+    url: `https://api.seatgeek.com/2/events`,
+    method: 'GET',
+    dataType: 'json',
+    headers: {
+      'Accept-Encoding': 'application/json',
+    },
+    params: {
+      client_id: process.env.API_KEY,
+      q: search
+    }
+  })
+    .then(results => {
+          console.log(results.data.events.length);
+          console.log(results.data.events[0].performers[0].name);
+          console.log(search);
+          res.render('pages/discover', {events : results.data}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+        })
+    .catch(error => {
+          console.log(error);
+          res.render('pages/discover', {events : []});
+        });
+});
+
 app.get('/event', async (req, res) => {
 
   const eID = req.query.eventID
