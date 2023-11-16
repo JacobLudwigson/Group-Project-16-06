@@ -10,6 +10,7 @@ const session = require('express-session'); // To set the session object. To sto
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -254,7 +255,7 @@ app.get('/discover',(req,res) => {
     }
   })
     .then(results => {
-          res.render('pages/discover', {events : results.data}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+          res.render('pages/discover', {events : results.data.events}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
         })
     .catch(error => {
           console.log(error);
@@ -279,10 +280,7 @@ app.post('/discover',(req,res) => {
     }
   })
     .then(results => {
-          console.log(results.data.events.length);
-          console.log(results.data.events[0].performers[0].name);
-          console.log(search);
-          res.render('pages/discover', {events : results.data}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+          res.render('pages/discover', {events : results.data.events}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
         })
     .catch(error => {
           console.log(error);
