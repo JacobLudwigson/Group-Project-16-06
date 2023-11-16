@@ -2,6 +2,47 @@
 <%- include ('../partials/menu') %>
 
 <main>
+    <div class = "container-fluid" id = "indEventCont">
+        <div class = "container" id = "eventHeader">
+            <h1><%-event.artist%></h1>
+            <h6><%-event.state%></h6>
+            <h6><%-event.imageUrl%></h6>
+
+            <img src = "<%-event.imageUrl%>" height = "100px" width = "100px" alt = "Artist picture">
+        </div>
+    </div>
+    <div class = "container">
+
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
+        <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
+        <div id="map" style="background-color:#292929; position:absolute;top:60px;right:20px; height: 300px; width:600px;" class="map_canvas-in mapboxgl-map"></div>
+        <!-- <div id="map" "></div> -->
+        
+    
+    
+       
+        <script>
+            mapboxgl.accessToken = 'pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg';
+        const map = new mapboxgl.Map({
+        container: 'map',
+        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [-79.4512, 43.6568],
+        zoom: 13
+        });
+        
+        map.addControl(
+        new MapboxDirections({
+        accessToken: mapboxgl.accessToken
+        }),
+        'top-right'
+        );
+        </script>
+    
+    </div>
+    <div class = "container-fluid">
+
+    </div>    
   <div class="container">
     <!-- THE REST OF YOUR HTML CODE GOES HERE -->
     <h1>Comments</h1>
@@ -23,31 +64,6 @@
       <button type="submit" value="comment">Submit</button>
     </form>
   </div>
-<div class = "container">
-
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
-    <div id="map" style = "width: 400px; height: 200px;position:absolute;top:60px;right:20px;"></div>
-    
-    <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg';
-    const map = new mapboxgl.Map({
-    container: 'map',
-    // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-    style: 'mapbox://styles/mapbox/streets-v12',
-    center: [-79.4512, 43.6568],
-    zoom: 13
-    });
-    
-    map.addControl(
-    new MapboxDirections({
-    accessToken: mapboxgl.accessToken
-    }),
-    'top-left'
-    );
-    </script>
-
-</div>
 
 </main>
 

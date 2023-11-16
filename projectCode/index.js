@@ -253,9 +253,39 @@ app.get('/discover',(req,res) => {
       q: `Cody`
     }
   })
+
     .then(results => {
-          res.render('pages/discover', {events : results.data}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+      let a = (results.data.events.length > 10) ? 10 : results.data.events.length;
+      for(let i = 0; i < a; i++){
+        let result = results.data.events[i];
+        query = `UPDATE events
+        SET eventID = '${result.id}',
+        datetime_utc = '${result.datetime_utc}',
+        state = '${result.venue.state}',
+        name = '${result.venue.name}',
+        timezone = '${result.venue.timezone}',
+        url = '${result.venue.url}',
+        score = '${result.venue.score}',
+        locLat = '${result.venue.location.lat}',
+        locLong = '${result.venue.location.lon}',
+        address = '${result.venue.address}',
+        country = '${result.venue.country}',
+        capacity = '${result.venue.capacity}',
+        city = '${result.venue.city}',
+        artist = '${result.performers[0].name}',
+        imageUrl = '${result.performers[0].image}'
+        WHERE tableEventID = '${i+1}';`;
+        db.any(query)
+        .then(()=>{
+          
         })
+        .catch(error => {
+          console.log(error);
+          res.render('pages/discover', {events : []});
+        });
+      }
+      res.render('pages/discover',{ events : results.data});
+      })
     .catch(error => {
           console.log(error);
           res.render('pages/discover', {events : []});
@@ -263,16 +293,24 @@ app.get('/discover',(req,res) => {
 });
 
 app.get('/event', async (req, res) => {
-
   const eID = req.query.eventID
   const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
+  const eventQuery = `SELECT * FROM events WHERE eventID = '${eID}';`;
   db.any(query)
     .then((comment) => {
-      console.log(eID);
-      res.render('pages/event', {
-        comment,
-        eID,
-      });
+      db.one(eventQuery)
+        .then((event) =>{
+          res.render('pages/event', {
+            event : event,
+            comment,
+            eID,
+          });
+        })
+        .catch((err) =>{
+          console.log(err);
+
+        })
+
     })
   });
 
