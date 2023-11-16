@@ -65,4 +65,24 @@ describe('Server!', () => {
         done();
       });
   });
+  it('positive : /profile working properly', done => {
+    chai
+      .request(server)
+      .get('/profile')
+      .query({username : "Jake"})
+      .end((err,res) => {
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
+  it('Negative : /profile not working, user is not logged in', done => {
+    chai
+      .request(server)
+      .get('/profile')
+      .query({username : 10})
+      .end((err,res) => {
+        expect(res).to.have.status(500);
+        done();
+      });
+  });
 });
