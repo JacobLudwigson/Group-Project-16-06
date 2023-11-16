@@ -25,7 +25,6 @@ const dbConfig = {
 
 const db = pgp(dbConfig);
 
-const all_comments = `SELECT comment FROM comments;`;
 
 // test your database
 db.connect()
@@ -118,7 +117,7 @@ app.post('/register', async (req, res) => {
             console.log(err)
             res.render('pages/register', {
               error : true,
-              message : "Failed to register",
+              message : "Failed to register!",
             }); 
           })
         })
@@ -172,7 +171,22 @@ const auth = (req, res, next) => {
   }
   next();
 };
+app.get('/profile', (req,res) =>{
+  var query = `SELECT * FROM profiles WHERE username = '${req.query.username}';`
+  db.any(query)
+    .then((data) =>{
+      res.status(200);
+      res.render('pages/profile', {
+        user : data[0]
+      });
+    })
+    .catch((err) =>{
+      res.status(404);
+      console.log(err);
+      res.render('pages/register');
+    });
 
+});
 // Authentication Required
 app.use(auth);
 app.get('/editProfile', function(req,res){
@@ -180,7 +194,7 @@ app.get('/editProfile', function(req,res){
 
   db.any(query)
     .then((data)=>{
-      res.status(200);
+      res.status(201);
       res.render('pages/editProfile', {
         user : data[0]
       });
@@ -204,8 +218,18 @@ app.post('/editProfile', (req,res) => {
   var Tusername = req.session.user.username;
   db.any(query)
     .then(() =>{
-      res.status(200);
-      res.redirect('/profile' + "?username=" + Tusername);
+      if(req.body.Country != undefined)
+      {
+        res.status(200);
+        res.redirect('/profile' + "?username=" + Tusername , {
+          status: 'failiure',
+          message : "Location required for discover",
+        });
+      }
+      else{
+        res.status(400);
+        res.redirect('/profile' + "?username=" + Tusername);
+      }
     })
     .catch((err) =>{
       res.status(400);
@@ -320,14 +344,16 @@ app.post('/discover',(req,res) => {
         });
 });
 
-app.get('/event', async (req, res) => {
+app.get('/event', (req, res) => {
   const eID = req.query.eventID
   const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
   const eventQuery = `SELECT * FROM events WHERE eventID = '${eID}';`;
   db.any(query)
     .then((comment) => {
+      res.status(201);
       db.one(eventQuery)
         .then((event) =>{
+          res.status(201);
           res.render('pages/event', {
             event : event,
             comment,
@@ -335,18 +361,21 @@ app.get('/event', async (req, res) => {
           });
         })
         .catch((err) =>{
+          res.status(400);
           console.log(err);
-
-        })
+        });
 
     })
+    .catch((err) =>{
+      res.status(400);
+      console.log(err);
+    });
   });
 
 app.post('/event', function (req,res) {
   const query = `INSERT INTO comments (comment, eventID, username) VALUES ($1,'${req.query.eventID}', '${req.session.user.username}') RETURNING *;`;
 
   db.any(query, [req.body.comment,])
-
   res.redirect('/event' + '?eventID=' + req.query.eventID);
 });
 
