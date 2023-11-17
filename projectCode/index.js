@@ -280,11 +280,16 @@ app.post('/discover',(req,res) => {
     }
   })
     .then(results => {
-          res.render('pages/discover', {events : results.data.events}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
-        })
+          if (results.data.events.length == 0)
+          {
+            res.render('pages/discover', {message : `No Events found for '${search}'`, events : [], error : true});
+          }
+          else{
+            res.render('pages/discover', {events : results.data.events}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+}})
     .catch(error => {
           console.log(error);
-          res.render('pages/discover', {events : []});
+          res.render('pages/discover', {message : `No Events found for '${search}'`});
         });
 });
 
