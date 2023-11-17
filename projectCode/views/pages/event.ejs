@@ -3,7 +3,7 @@
 
 <main>
     <div class = "container-fluid" id = "indEventCont">
-        <div class = "container" id = "indEventPic" style = "position:absolute;top:60px;left:20px; height: 200px; width:200px;">
+        <div class = "container" id = "indEventPic" style = "position:absolute;top:120px; right: 80px; left:20px; height: 200px; width:200px;">
             <img src = "<%-event.imageurl%>" height = "200px" width = "200px" alt = "Artist picture">
         </div> 
         <div class = "container" id = "eventHeader">
@@ -45,7 +45,7 @@
     <div class = "container-fluid">
 
     </div>    
-  <div class="container">
+  <div class="container" style="margin-top:200px">
     <!-- THE REST OF YOUR HTML CODE GOES HERE -->
     <h1>Comments</h1>
     <hr/>
@@ -53,7 +53,10 @@
     <div class="row">
       <div class="col-sm" height="200">
         <% comment.forEach(element => {%>
-          <body><br> <%= element.comment %></body>
+          <body>
+            <a class="nav-link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
+            <%= element.comment %>
+          </body>
           <hr/>
         <% }) %>
       </div>
