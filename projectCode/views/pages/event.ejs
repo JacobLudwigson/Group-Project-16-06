@@ -5,6 +5,7 @@
     <div class = "container-fluid" id = "indEventCont">
         <div class = "container" id = "indEventPic" style = "position:absolute;top:120px; right: 80px; left:20px; height: 200px; width:200px;">
             <img src = "<%-event.imageurl%>" height = "200px" width = "200px" alt = "Artist picture">
+            <%-user.first_name%>
         </div> 
         <div class = "container" id = "eventHeader">
             <h1><%-event.artist%></h1>
@@ -32,13 +33,20 @@
         center: [-79.4512, 43.6568],
         zoom: 13
         });
-        
+        direc = new MapboxDirections({
+        accessToken: mapboxgl.accessToken,
+        profile : "mapbox/driving"
+        });
+
         map.addControl(
-        new MapboxDirections({
-        accessToken: mapboxgl.accessToken
-        }),
+        direc,
         'top-right'
         );
+        direc.setOrigin('<%-user.address%>');
+        // console.log('<%-user.name %>');
+        direc.setDestination('<%-event.address%>');
+        // console.log(<%=event.address %>);
+
         </script>
     
     </div>
