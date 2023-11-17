@@ -39,6 +39,6 @@ CREATE TABLE events (
     capacity INT,
     city VARCHAR(100),
     artist VARCHAR(100),
-    imageUrl VARCHAR(100)
+    imageUrl VARCHAR(255)
 );
 

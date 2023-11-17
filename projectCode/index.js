@@ -218,18 +218,20 @@ app.post('/editProfile', (req,res) => {
   var Tusername = req.session.user.username;
   db.any(query)
     .then(() =>{
-      if(req.body.Country != undefined)
-      {
-        res.status(200);
-        res.redirect('/profile' + "?username=" + Tusername , {
-          status: 'failiure',
-          message : "Location required for discover",
-        });
-      }
-      else{
-        res.status(400);
-        res.redirect('/profile' + "?username=" + Tusername);
-      }
+      // if(req.body.Country != undefined)
+      // {
+      //   res.status(200);
+      //   res.redirect('/profile' + "?username=" + Tusername , {
+      //     status: 'failiure',
+      //     message : "Location required for discover",
+      //   });
+      // }
+      // else{
+      //   res.status(400);
+      //   
+      // }
+      res.status(200);
+      res.redirect('/profile' + "?username=" + Tusername);
     })
     .catch((err) =>{
       res.status(400);
@@ -333,11 +335,37 @@ app.post('/discover',(req,res) => {
     }
   })
     .then(results => {
-          console.log(results.data.events.length);
-          console.log(results.data.events[0].performers[0].name);
-          console.log(search);
-          res.render('pages/discover', {events : results.data}); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+      let a = (results.data.events.length > 10) ? 10 : results.data.events.length;
+      for(let i = 0; i < a; i++){
+        let result = results.data.events[i];
+        query = `UPDATE events
+        SET eventID = '${result.id}',
+        datetime_utc = '${result.datetime_utc}',
+        state = '${result.venue.state}',
+        name = '${result.venue.name}',
+        timezone = '${result.venue.timezone}',
+        url = '${result.venue.url}',
+        score = '${result.venue.score}',
+        locLat = '${result.venue.location.lat}',
+        locLong = '${result.venue.location.lon}',
+        address = '${result.venue.address}',
+        country = '${result.venue.country}',
+        capacity = '${result.venue.capacity}',
+        city = '${result.venue.city}',
+        artist = '${result.performers[0].name}',
+        imageUrl = '${result.performers[0].image}'
+        WHERE tableEventID = '${i+1}';`;
+        db.any(query)
+        .then((data)=>{
+          console.log(data);
         })
+        .catch(error => {
+          console.log(error);
+          res.render('pages/discover', {events : []});
+        });
+      }
+      res.render('pages/discover',{ events : results.data});
+      })
     .catch(error => {
           console.log(error);
           res.render('pages/discover', {events : []});
