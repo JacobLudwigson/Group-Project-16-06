@@ -10,6 +10,7 @@ const session = require('express-session'); // To set the session object. To sto
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -335,6 +336,11 @@ app.post('/discover',(req,res) => {
     }
   })
     .then(results => {
+      if (results.data.events.length == 0)
+      {
+        res.render('pages/discover', {message : `No Events found for '${search}'`, events : [], error : true});
+      }
+
       let a = (results.data.events.length > 10) ? 10 : results.data.events.length;
       for(let i = 0; i < a; i++){
         let result = results.data.events[i];
@@ -368,7 +374,7 @@ app.post('/discover',(req,res) => {
       })
     .catch(error => {
           console.log(error);
-          res.render('pages/discover', {events : []});
+          res.render('pages/discover', {message : `No Events found for '${search}'`});
         });
 });
 
