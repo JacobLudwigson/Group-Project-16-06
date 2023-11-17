@@ -311,7 +311,7 @@ app.get('/discover',(req,res) => {
           res.render('pages/discover', {events : []});
         });
       }
-      res.render('pages/discover',{ events : results.data});
+      res.render('pages/discover',{ events : results.data.events});
       })
     .catch(error => {
           console.log(error);
@@ -340,7 +340,7 @@ app.post('/discover',(req,res) => {
       {
         res.render('pages/discover', {message : `No Events found for '${search}'`, events : [], error : true});
       }
-
+      else{
       let a = (results.data.events.length > 10) ? 10 : results.data.events.length;
       for(let i = 0; i < a; i++){
         let result = results.data.events[i];
@@ -370,8 +370,9 @@ app.post('/discover',(req,res) => {
           res.render('pages/discover', {events : []});
         });
       }
-      res.render('pages/discover',{ events : results.data});
-      })
+      res.render('pages/discover',{ events : results.data.events});
+    }})
+    
     .catch(error => {
           console.log(error);
           res.render('pages/discover', {message : `No Events found for '${search}'`});
