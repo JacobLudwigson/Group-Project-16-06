@@ -362,13 +362,12 @@ app.post('/discover',(req,res) => {
         imageUrl = '${result.performers[0].image}'
         WHERE tableEventID = '${i+1}';`;
         db.any(query)
-        .then((data)=>{
-          console.log(data);
+        .then(()=>{
         })
         .catch(error => {
           console.log(error);
           res.render('pages/discover', {events : []});
-        });
+        })
       }
       res.render('pages/discover',{ events : results.data.events});
     }})
