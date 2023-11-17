@@ -1,7 +1,24 @@
 i)Decisions made
-
+Want to differentiate from ticketmaster api, want to use profile to filter location
+we should differentiate location based on a filter
+Comments should include a join carpool/redirects to transportation tab
+can search for a user
+assign a task to somebody in tuesday meeting
 
 ii)Alternative actions/options discussed
-
+Filter by country, state, or city?
+If user wants to change location, how can they do it?
+Use a filter for sorting location instead of updating profile
+Added comment option to join event
+Transportation page, options for person to take an uber, shared car ride, walking or other methods
+improve on search, search for user or location
 
 iii)Follow up items including agreed-on roles and responsibilities
+searching events based on user location -
+sorting feature for location -
+multiple search components: user or location -
+UI improvements - 
+
+IV) Minutes of Meeting 11/16:
+12:48-1:08
+20 minutes
