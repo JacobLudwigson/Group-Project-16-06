@@ -5,40 +5,40 @@
     <%-include ('../partials/message')-%>
     <%var counter = 0%>
       <%if(events.length > 0){%>
-      <table>
+      <table class="centered-table">
       <tbody>
         <tr>
-            <%while(counter < 5 && counter < events.length){%>
-              <td>
-                <a class="nav-link" href="/event?eventID=<%-events[counter].id-%>" method="GET" id="card-button">
-                <div class="card" style="width: 18rem; border-style: solid; border-color: rgb(0, 0, 0);">
-                  <img src="<%-events[counter].performers[0].image-%>" class="card-img-top" alt="https://gamepedia.cursecdn.com/lolesports_gamepedia_en/thumb/c/c0/University_of_Colorado_Boulderlogo_square.png/1200px-University_of_Colorado_Boulderlogo_square.png" width = "100" height = "100">
-                  <div class="card-body">
-                    <h5 class="card-title"><%-events[counter].performers[0].name-%></h5>
-                    <p class="card-text"><%-events[counter].venue.name-%><br><%-events[counter].venue.display_location-%></p>
-                  </div>
-                  <ul class="list-group list-group-flush">   
-                      <%date0 = new Date(events[counter].datetime_utc)%>
-            
-                    <li class="list-group-item"><%-date0.toString()-%></li>
-                    <li class="list-group-item"><%-events[counter].venue.capacity-%>p Capacity</li>
-            
-                  </ul>
-                  <div class="card-body">
-                    <a href="<%-events[counter].performers[0].url-%>" class="card-link">Purchase <%-events[counter].performers[0].name-%> Tickets</a>
-                  </div>
+          <%while(counter < 5 && counter < events.length){%>
+            <td>
+              <a class="nav-link" href="/event?eventID=<%-events[counter].id-%>" method="GET" id="card-button">
+              <div class="card">
+                <img src="<%-events[counter].performers[0].image-%>" class="card-img-top" alt="https://gamepedia.cursecdn.com/lolesports_gamepedia_en/thumb/c/c0/University_of_Colorado_Boulderlogo_square.png/1200px-University_of_Colorado_Boulderlogo_square.png" width = "100" height = "100">
+                <div class="card-body">
+                  <h5 class="card-title"><%-events[counter].performers[0].name-%></h5>
+                  <p class="card-text"><%-events[counter].venue.name-%><br><%-events[counter].venue.display_location-%></p>
+                </div>
+                <ul class="list-group list-group-flush">   
+                    <%date0 = new Date(events[counter].datetime_utc)%>
+          
+                  <li class="list-group-item"><%-date0.toString()-%></li>
+                  <li class="list-group-item"><%-events[counter].venue.capacity-%>p Capacity</li>
+          
+                </ul>
+                <div class="card-body">
+                  <a href="<%-events[counter].performers[0].url-%>" class="card-link">Purchase <%-events[counter].performers[0].name-%> Tickets</a>
                 </div>
               </div>
-              </a>
-              </td>
-              <%counter++%>
-            <%}%>
+            </div>
+            </a>
+            </td>
+            <%counter++%>
+          <%}%>
         </tr>
         <tr>
           <%while(counter < 10 && counter < events.length){%>
             <td>
               <a class="nav-link" href="/event?eventID=<%-events[counter].id-%>" method="GET" id="card-button">
-              <div class="card" style="width: 18rem; border-style: solid; border-color: rgb(0, 0, 0);">
+              <div class="card">
                 <img src="<%-events[counter].performers[0].image-%>" class="card-img-top" alt="https://gamepedia.cursecdn.com/lolesports_gamepedia_en/thumb/c/c0/University_of_Colorado_Boulderlogo_square.png/1200px-University_of_Colorado_Boulderlogo_square.png" width = "100" height = "100">
                 <div class="card-body">
                   <h5 class="card-title"><%-events[counter].performers[0].name-%></h5>

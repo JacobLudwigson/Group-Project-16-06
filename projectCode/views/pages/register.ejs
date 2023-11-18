@@ -1,14 +1,18 @@
-<%- include ('../partials/head') %> 
+<%- include ('../partials/head') %> <%- include ('../partials/menu') %>
+
 <main>
-  <div class="container">
+  <div class="container" style="padding-top: 20px; width: 400px">
     <form action="/register" method="POST" class = "form-group">
         <label for="name">Username:</label>
         <input type="text" id="username" name="username" class = "form-control"/>
       
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" class = "form-control"/>
+        <input type="password" id="password" name="password" class = "form-control" style="margin-bottom: 10px;"/>
       
-        <input type="submit" value="Register" class="btn btn-primary" />
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <p style="margin: 0;">Already have an account? <a href="/login" style="color: rgb(68, 68, 68); font-weight: bold; text-decoration: none;">Login here</a></p>
+          <input type="submit" value="Login" class="btn btn-primary" />
+        </div>
       </form>
   </div>
 </main>
