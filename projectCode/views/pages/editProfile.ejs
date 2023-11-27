@@ -38,6 +38,7 @@
                 <div class="row mt-3">
                     <div class="col-md-12"><label class="labels">Biography</label><input type="bio" id="bio" name="bio" class = "form-control" value = "<%-user.bio -%>"/></div>
                     <div class="col-md-12"><label class="labels">Profile Picture</label><input type="url" id="profilePic" name="profilePic" class = "form-control" value = "<%-user.profile_pic_path-%>"/></div>
+                    <div class="col-md-6"><label class="labels">Address</label><input type="address" class="form-control" id = "address" name = "address" value = "<%-user.address -%>"></div>
                     <div class="col-md-6"><label class="labels">State</label><input type="text" class="form-control" id = "state" name ="state" value = "<%-user.state -%>"></div>
                     <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" id = "Country" name = "Country" value = "<%-user.country -%>"></div>                </div>
                 <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Save Profile</button></div>
@@ -46,29 +47,6 @@
         
         <div class="col-md-4">
             <div class="p-3 py-5" >
-                <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
-                <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
-                
-                <div id="map" style = "background-color:#292929; position:absolute;top:60px;right:20px; height: 200px; width:300px;"></div>
-                
-                <script>
-                  mapboxgl.accessToken = 'pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg';
-                const map = new mapboxgl.Map({
-                container: 'map',
-                // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-                style: 'mapbox://styles/mapbox/streets-v12',
-                center: [-79.4512, 43.6568],
-                zoom: 13
-                });
-                
-                // Add the control to the map.
-                map.addControl(
-                new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl
-                })
-                );
-                </script>
 
             </div>
         </div>

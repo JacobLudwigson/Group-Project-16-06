@@ -206,40 +206,82 @@ app.get('/editProfile', function(req,res){
       res.render('pages/profile')
     })
 });
-app.post('/editProfile', (req,res) => {
-  var query = `UPDATE profiles
-  SET first_name = '${req.body.first_name}',
-  last_name = '${req.body.last_name}',
-  profile_pic_path = '${req.body.profilePic}',
-  bio = '${req.body.bio}',
-  state = '${req.body.state}',
-  Country = '${req.body.Country}'
-  WHERE username = '${req.session.user.username}';`
 
+app.post('/editProfile', (req,res) => {
+
+  Address = req.body.address;
   var Tusername = req.session.user.username;
-  db.any(query)
-    .then(() =>{
-      // if(req.body.Country != undefined)
-      // {
-      //   res.status(200);
-      //   res.redirect('/profile' + "?username=" + Tusername , {
-      //     status: 'failiure',
-      //     message : "Location required for discover",
-      //   });
-      // }
-      // else{
-      //   res.status(400);
-      //   
-      // }
-      res.status(200);
-      res.redirect('/profile' + "?username=" + Tusername);
+  axios({
+    url: `https://api.mapbox.com/search/searchbox/v1/suggest?`,
+    method: 'GET',
+    dataType: 'json',
+    headers: {
+      'Accept-Encoding': 'application/json',
+    },
+    params: {
+      q : Address,
+      access_token : 'pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg',
+      session_token : '00bd329c-6af4-4b71-88bd-e916d6b0945d'
+    }
+  })
+  .then ((suggest) => {
+    axios({
+      url: `https://api.mapbox.com/search/searchbox/v1/retrieve/${suggest.data.suggestions[0].mapbox_id}?`,
+      method: 'GET',
+      dataType: 'json',
+      headers: {
+        'Accept-Encoding': 'application/json',
+      },
+      params: {
+        access_token : 'pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg',
+        session_token : '00bd329c-6af4-4b71-88bd-e916d6b0945d'
+      }
     })
-    .catch((err) =>{
-      res.status(400);
-      console.log(err);
-      res.render('pages/register');
-    });
-})
+    .then((retrieve)=>{
+        var query = `UPDATE profiles
+        SET first_name = '${req.body.first_name}',
+        last_name = '${req.body.last_name}',
+        profile_pic_path = '${req.body.profilePic}',
+        bio = '${req.body.bio}',
+        state = '${req.body.state}',
+        Country = '${req.body.Country}',
+        address ='${req.body.address}',
+        userLat = '${retrieve.data.features[0].geometry.coordinates[0]}',
+        userLon = '${retrieve.data.features[0].geometry.coordinates[1]}'
+        WHERE username = '${req.session.user.username}';`
+        db.any(query)
+        .then((data) =>{
+
+          // if(req.body.Country != undefined)
+          // {
+          //   res.status(200);
+          //   res.redirect('/profile' + "?username=" + Tusername , {
+          //     status: 'failiure',
+          //     message : "Location required for discover",
+          //   });
+          // }
+          // else{
+          //   res.status(400);
+          //   
+          // }
+          res.status(200);
+          res.redirect('/profile' + "?username=" + Tusername);
+        })
+        .catch((err) =>{
+          res.status(400);
+          console.log(err);
+          res.render('pages/register');
+        });
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+  })
+  .catch((err)=>{
+    console.log(err);
+  })
+
+});
 app.get('/profile', (req,res) =>{
   var query = `SELECT * FROM profiles WHERE username = '${req.query.username}';`
 
@@ -382,17 +424,27 @@ app.get('/event', (req, res) => {
   const eID = req.query.eventID
   const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
   const eventQuery = `SELECT * FROM events WHERE eventID = '${eID}';`;
+  const userProf = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
   db.any(query)
     .then((comment) => {
       res.status(201);
       db.one(eventQuery)
         .then((event) =>{
-          res.status(201);
-          res.render('pages/event', {
-            event : event,
-            comment,
-            eID,
-          });
+          db.one(userProf)
+          .then((profile)=>{
+            console.log(profile);
+            res.status(201);
+            res.render('pages/event', {
+              user : profile,
+              event : event,
+              comment,
+              eID,
+            });
+          })
+          .catch((err)=>{
+            res.status(400);
+            console.log(err);
+          })
         })
         .catch((err) =>{
           res.status(400);
