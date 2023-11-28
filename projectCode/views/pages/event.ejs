@@ -4,12 +4,12 @@
 <main>
     <div class = "container-fluid" id = "indEventCont">
         <div class = "container" id = "indEventPic" style = "position:absolute;top:120px; right: 80px; left:20px; height: 200px; width:200px;">
-            <img src = "<%-event.imageurl%>" height = "200px" width = "200px" alt = "Artist picture">
+            <img src = "<%-events[0].performers[0].image-%>" height = "200px" width = "200px" alt = "Artist picture">
             <%-user.first_name%>
         </div> 
         <div class = "container" id = "eventHeader">
-            <h1><%-event.artist%></h1>
-            <h6><%-event.state%></h6>
+            <h1><%-events[0].performers[0].name-%></h1>
+            <h6><%-events[0].venue.state-%></h6>
 
             
         </div>
@@ -44,8 +44,8 @@
         );
         direc.setOrigin('<%-user.address%>');
         // console.log('<%-user.name %>');
-        direc.setDestination('<%-event.address%>');
-        // console.log(<%=event.address %>);
+        direc.setDestination('<%-events[0].venue.address%>');
+        // console.log(<%=events[0].venue.address %>);
 
         </script>
     
@@ -70,7 +70,7 @@
       </div>
     </div>
   </div>
-    <form action="<%-"/event" + "?eventID=" + eID-%>" method="POST" style="margin-bottom: 120px">
+    <form action="<%-"/event" + "?id=" + events[0].id-%>" method="POST" style="margin-bottom: 120px">
       <div class="mb-3">
         <input type="text" id="comment" name="comment"/>
       </div>

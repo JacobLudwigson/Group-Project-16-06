@@ -420,49 +420,56 @@ app.post('/discover',(req,res) => {
         });
 });
 
-app.get('/event', (req, res) => {
-  const eID = req.query.eventID
-  const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
-  const eventQuery = `SELECT * FROM events WHERE eventID = '${eID}';`;
-  const userProf = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
-  db.any(query)
-    .then((comment) => {
-      res.status(201);
-      db.one(eventQuery)
-        .then((event) =>{
-          db.one(userProf)
-          .then((profile)=>{
-            console.log(profile);
-            res.status(201);
-            res.render('pages/event', {
-              user : profile,
-              event : event,
-              comment,
-              eID,
-            });
+app.get('/event', (req, res) =>{
+    const eID = req.query.id
+    const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
+    const userProf = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+    db.any(query)
+      .then((comment) => {
+        res.status(201);
+            db.one(userProf)
+            .then((profile)=>{
+              res.status(201);
+              axios({
+                url: `https://api.seatgeek.com/2/events`,
+                method: 'GET',
+                dataType: 'json',
+                headers: {
+                  'Accept-Encoding': 'application/json',
+                },
+                params: {
+                  client_id: process.env.API_KEY,
+                  id: req.query.id
+                }
+              })
+              .then(results =>{
+                res.render('pages/event', {
+                  user : profile,
+                  comment,
+                  events : results.data.events
+                });
+              })
+                .catch((err) => {
+                  console.log(err);
+                  res.render('pages/event', {events : []});
+                });
+            })
+            .catch((err)=>{
+              res.status(400);
+              console.log(err);
+            })
           })
-          .catch((err)=>{
-            res.status(400);
-            console.log(err);
-          })
-        })
-        .catch((err) =>{
-          res.status(400);
-          console.log(err);
-        });
-
-    })
-    .catch((err) =>{
-      res.status(400);
-      console.log(err);
+      .catch((err) =>{
+        res.status(400);
+        console.log(err);
+      });
     });
-  });
 
 app.post('/event', function (req,res) {
-  const query = `INSERT INTO comments (comment, eventID, username) VALUES ($1,'${req.query.eventID}', '${req.session.user.username}') RETURNING *;`;
+  const query = `INSERT INTO comments (comment, eventID, username) VALUES ($1,'${req.query.id}', '${req.session.user.username}') RETURNING *;`;
 
   db.any(query, [req.body.comment,])
-  res.redirect('/event' + '?eventID=' + req.query.eventID);
+  res.redirect('/event' + '?id=' + req.query.id);
 });
 
 app.get('/map', function(req,res){
