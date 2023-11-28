@@ -471,27 +471,35 @@ app.get('/map', function(req,res){
 
 app.get('/transportation', (req,res) => {
   const eID = req.query.eventID
-  const query = `SELECT * FROM comment WHERE eventID = '${eID}';`;
+  const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
 
   db.any(query)
   .then((data) => {
     res.render('pages/transportation', {
       data,
+      eID,
     })
   });
 });
 
 app.post('/transportation', (req, res) => {
   const eID = req.query.eventID
-  const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
+  const querry = `UPDATE car SET currPass = currPass + 1 WHERE username = '${req.query.username}';`;
+  const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
 
-  db.any(query)
-  .then((data) => {
-    res.render('pages/transportation', {
-      data,
+  db.any(querry)
+  .then((moredata) => {
+    db.any(query)
+    .then((data) => {
+      res.render('pages/transportation', {
+        eID,
+        moredata,
+        data,
+      });
     })
-  });
+  })
 })
+
 
 // app.post('/transportation', function(req,res)  {
 

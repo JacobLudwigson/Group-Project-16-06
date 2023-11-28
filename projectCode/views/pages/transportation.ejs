@@ -7,13 +7,16 @@
     <div class="overflow-auto">
     <div class="row">
       <div class="col-sm" height="200">
-        <% car.forEach(element => {%>
+        <% data.forEach(element => {%>
             <body>
               <a class="link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
-              <%= element.numPass %>
-              <%= element.currPass %>
-              <%= element.currPass %>
+              <%= element.currpass %> / <%= element.numpass %>
             </body>
+            <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username %>" method="POST" style="margin-bottom: 120px">
+                <div class="mb-3">
+                </div>
+                <button type="submit" >Join</button>
+              </form>
             <hr/>
           <% }) %>
         </div>

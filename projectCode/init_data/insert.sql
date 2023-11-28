@@ -32,3 +32,6 @@ INSERT INTO car (eventID, username, numPass, currPass) VALUES
 
 INSERT INTO car (eventID, username, numPass, currPass, Pusername) VALUES 
 (6094026, 'me', '4', '1', 'john');
+
+INSERT INTO car (eventID, username, numPass, currPass, Pusername) VALUES 
+(6094026, 'tony', '4', '2', 'tony');
