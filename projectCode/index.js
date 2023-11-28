@@ -452,7 +452,6 @@ app.get('/event', (req, res) => {
         .then((event) =>{
           db.one(userProf)
           .then((profile)=>{
-            console.log(profile);
             res.status(201);
             res.render('pages/event', {
               user : profile,
@@ -477,7 +476,34 @@ app.get('/event', (req, res) => {
       console.log(err);
     });
   });
+app.get('/driver', (req,res) => {
+  
+  // const query = `SELECT FROM cars WHERE username = '${req.session.username}';`
 
+  res.render('pages/driver', {
+    eventID : req.query.eventID
+  })
+})
+app.post('/driver', (req,res) => {
+  console.log("isitHere?:" + req.query.eventID)
+  const query = `INSERT INTO cars (username,eventID, maxPass) VALUES
+  username = '${req.session.user.username}',
+  eventID = '${req.query.eventID}',
+  maxPass = '${req.body.maxPass}',
+  maxDistPickup = '${req.body.maxDistPickup}',
+  cost = '${req.body.cost}';`
+
+
+  db.any(query)
+    .then((data) =>{
+
+      res.redirect('/event' + '?eventID=' + req.query.eventID);
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.redirect('/event' + '?eventID=' + req.query.eventID);
+    });
+})
 app.post('/event', function (req,res) {
   const query = `INSERT INTO comments (comment, eventID, username) VALUES ($1,'${req.query.eventID}', '${req.session.user.username}') RETURNING *;`;
 
