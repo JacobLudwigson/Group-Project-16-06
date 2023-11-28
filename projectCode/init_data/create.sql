@@ -53,5 +53,5 @@ CREATE TABLE car (
     Pusername VARCHAR(50),
     Pusername1 VARCHAR(50),
     Pusername2 VARCHAR(50),
-    Pusername3 VARCHAR(50),
-)
+    Pusername3 VARCHAR(50)
+);
