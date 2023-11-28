@@ -197,7 +197,8 @@ app.get('/editProfile', function(req,res){
     .then((data)=>{
       res.status(201);
       res.render('pages/editProfile', {
-        user : data[0]
+        user : data[0],
+        error : false
       });
     })
     .catch((err)=>{
@@ -210,6 +211,25 @@ app.get('/editProfile', function(req,res){
 app.post('/editProfile', (req,res) => {
 
   Address = req.body.address;
+  if (Address == ""){
+    var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+
+    db.any(query)
+      .then((data)=>{
+        res.status(201);
+        res.render('pages/editProfile', {
+          error : true,
+          message : "Must specify an address",
+          user : data[0]
+        }); 
+      })
+      .catch((err)=>{
+        console.log(err);
+        res.status(400);
+        res.render('pages/profile')
+      })
+  }
+  else{
   var Tusername = req.session.user.username;
   axios({
     url: `https://api.mapbox.com/search/searchbox/v1/suggest?`,
@@ -280,7 +300,7 @@ app.post('/editProfile', (req,res) => {
   .catch((err)=>{
     console.log(err);
   })
-
+}
 });
 app.get('/profile', (req,res) =>{
   var query = `SELECT * FROM profiles WHERE username = '${req.query.username}';`
