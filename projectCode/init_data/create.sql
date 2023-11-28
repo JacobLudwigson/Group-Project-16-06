@@ -50,6 +50,7 @@ CREATE TABLE car (
     eventID INT,
     username VARCHAR(50),
     numPass INT,
+    currPass INT,
     Pusername VARCHAR(50),
     Pusername1 VARCHAR(50),
     Pusername2 VARCHAR(50),

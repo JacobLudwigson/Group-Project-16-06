@@ -1,6 +1,6 @@
 <%- include ('../partials/head') %> <%- include ('../partials/menu') %>
 
-<div class="container" style="margin-top:200px">
+<div class="container" style="margin-top:50px">
     <!-- THE REST OF YOUR HTML CODE GOES HERE -->
     <h1>Carpool Offers</h1>
     <hr/>
@@ -9,14 +9,14 @@
       <div class="col-sm" height="200">
         <% car.forEach(element => {%>
             <body>
-              <a class="nav-link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
-              <%= element.eventID %>
+              <a class="link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
+              <%= element.numPass %>
+              <%= element.currPass %>
+              <%= element.currPass %>
             </body>
             <hr/>
           <% }) %>
         </div>
     </div>
 </div>
-Offer a ride:
-
 <%- include ('../partials/footer') %>

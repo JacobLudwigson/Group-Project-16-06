@@ -469,18 +469,26 @@ app.get('/map', function(req,res){
   res.render('pages/map');
 })
 
-app.get('/transportation', function(req,res){
-  res.render('pages/transportation');
-});
-
-app.post('/transportation', function(req, res){
+app.get('/transportation', (req,res) => {
   const eID = req.query.eventID
-  const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
+  const query = `SELECT * FROM comment WHERE eventID = '${eID}';`;
 
   db.any(query)
-  .then((car) => {
+  .then((data) => {
     res.render('pages/transportation', {
-      car : car,
+      data,
+    })
+  });
+});
+
+app.post('/transportation', (req, res) => {
+  const eID = req.query.eventID
+  const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
+
+  db.any(query)
+  .then((data) => {
+    res.render('pages/transportation', {
+      data,
     })
   });
 })
