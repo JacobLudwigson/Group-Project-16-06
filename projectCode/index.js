@@ -473,6 +473,18 @@ app.get('/transportation', function(req,res){
   res.render('pages/transportation');
 });
 
+app.post('/transportation', function(req, res){
+  const eID = req.query.eventID
+  const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
+
+  db.any(query)
+  .then((car) => {
+    res.render('pages/transportation', {
+      car : car,
+    })
+  });
+})
+
 // app.post('/transportation', function(req,res)  {
 
 // })

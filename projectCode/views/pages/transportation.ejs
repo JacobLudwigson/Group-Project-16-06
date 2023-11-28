@@ -7,8 +7,16 @@
     <div class="overflow-auto">
     <div class="row">
       <div class="col-sm" height="200">
+        <% car.forEach(element => {%>
+            <body>
+              <a class="nav-link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
+              <%= element.eventID %>
+            </body>
+            <hr/>
+          <% }) %>
         </div>
     </div>
 </div>
+Offer a ride:
 
 <%- include ('../partials/footer') %>
