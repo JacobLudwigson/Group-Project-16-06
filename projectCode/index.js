@@ -463,6 +463,7 @@ app.get('/event', (req, res) =>{
               })
               .then(results =>{
                 res.render('pages/event', {
+                  eID,
                   user : profile,
                   comment,
                   events : results.data.events
@@ -483,34 +484,7 @@ app.get('/event', (req, res) =>{
         console.log(err);
       });
     });
-app.get('/driver', (req,res) => {
-  
-  // const query = `SELECT FROM cars WHERE username = '${req.session.username}';`
 
-  res.render('pages/driver', {
-    eventID : req.query.eventID
-  })
-})
-app.post('/driver', (req,res) => {
-  console.log("isitHere?:" + req.query.eventID)
-  const query = `INSERT INTO cars (username,eventID, maxPass) VALUES
-  username = '${req.session.user.username}',
-  eventID = '${req.query.eventID}',
-  maxPass = '${req.body.maxPass}',
-  maxDistPickup = '${req.body.maxDistPickup}',
-  cost = '${req.body.cost}';`
-
-
-  db.any(query)
-    .then((data) =>{
-
-      res.redirect('/event' + '?eventID=' + req.query.eventID);
-    })
-    .catch((err)=>{
-      console.log(err)
-      res.redirect('/event' + '?eventID=' + req.query.eventID);
-    });
-})
 app.post('/event', function (req,res) {
   const query = `INSERT INTO comments (comment, eventID, username) VALUES ($1,'${req.query.id}', '${req.session.user.username}') RETURNING *;`;
 
@@ -521,7 +495,39 @@ app.post('/event', function (req,res) {
 app.get('/map', function(req,res){
   res.render('pages/map');
 })
+app.get('/driver', (req,res) => {
+  
+  // const query = `SELECT FROM cars WHERE username = '${req.session.username}';`
 
+  res.render('pages/driver', {
+    eventID : req.query.eventID
+  })
+})
+app.post('/driver', (req,res) => {
+  const query = `INSERT INTO car (username,eventID, maxPass, maxDistPickup, cost) VALUES
+  ('${req.session.user.username}',
+  '${req.query.eventID}',
+  '${req.body.maxPass}',
+  '${req.body.maxDistPickup}',
+  '${req.body.cost}');`
+
+  // if ((req.body.maxDistPickup == undefined) || (req.body.maxPass == undefined) || (req.body.cost == undefined)){
+  //   res.render('pages/driver', {
+  //     eventID : req.query.eventID,
+  //     error : true,
+  //     message : 'Must Fill out'
+  //   })
+  // }
+  db.any(query)
+    .then((data) =>{
+
+      res.redirect('/event' + '?id=' + req.query.eventID);
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.redirect('/event' + '?id=' + req.query.eventID);
+    });
+})
 app.get('/transportation', (req,res) => {
   const eID = req.query.eventID
   const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
@@ -531,23 +537,33 @@ app.get('/transportation', (req,res) => {
     res.render('pages/transportation', {
       data,
       eID,
+      user : req.session.user.username
     })
   });
 });
 
 app.post('/transportation', (req, res) => {
+  var puser = ""
+  var pnum =  0 < req.query.passengerNum-1 ? 0 : req.query.passengerNum-1;
+  if(req.query.ct != '-1') {
+    puser = req.session.user.username
+    pnum += 1;
+  }
   const eID = req.query.eventID
-  const querry = `UPDATE car SET currPass = currPass + 1 WHERE username = '${req.query.username}';`;
+  const querry = `UPDATE car SET Pusername${pnum} = '${puser}', currPass = currPass + ${req.query.ct} WHERE username = '${req.query.username}';`;
   const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
 
   db.any(querry)
   .then((moredata) => {
+   
     db.any(query)
     .then((data) => {
+      console.log(data);
       res.render('pages/transportation', {
         eID,
         moredata,
         data,
+        user : req.session.user.username
       });
     })
   })

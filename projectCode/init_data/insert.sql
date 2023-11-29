@@ -26,12 +26,12 @@ INSERT INTO events (eventID) VALUES (0);
 INSERT INTO events (eventID) VALUES (0);
 
 
-INSERT INTO car (eventID, username, numPass, currPass) VALUES 
+INSERT INTO car (eventID, username, maxPass, currPass) VALUES 
 (6094026, 'somebody', '4', '0');
 
 
-INSERT INTO car (eventID, username, numPass, currPass, Pusername) VALUES 
-(6094026, 'me', '4', '1', 'john');
+-- INSERT INTO car (eventID, username, maxPass, currPass, Pusername0) VALUES 
+-- (6094026, 'me', '4', '1', 'john');
 
-INSERT INTO car (eventID, username, numPass, currPass, Pusername) VALUES 
-(6094026, 'tony', '4', '2', 'tony');
+-- INSERT INTO car (eventID, username, maxPass, currPass, Pusername) VALUES 
+-- (6094026, 'tony', '4', '2', 'tony');

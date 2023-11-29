@@ -2,21 +2,38 @@
 
 <div class="container" style="margin-top:50px">
     <!-- THE REST OF YOUR HTML CODE GOES HERE -->
-    <h1>Carpool Offers</h1>
+    <a class="link" href="/event?id=<%=eID%>"><b>Event Page</b></a>
+    <h1>Carpool Offers: </h1>
     <hr/>
     <div class="overflow-auto">
     <div class="row">
       <div class="col-sm" height="200">
-        <% data.forEach(element => {%>
+        <% var arr = new Array() %>
+        <% data.forEach(element => {
+          arr[element.carid] = element; %>
+         <%}); %>
+         
+        <% arr.forEach(element => {%>
             <body>
               <a class="link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
-              <%= element.currpass %> / <%= element.numpass %>
+              <%= element.currpass %> / <%= element.maxpass %>
             </body>
-            <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username %>" method="POST" style="margin-bottom: 120px">
-                <div class="mb-3">
+
+              <div class="mb-3"  id = "joinCarpool">
+                <% if (element.cost != 0) { %>
+                  Driver is asking : $<%= element.cost %> for pickup.
+                  <% } %>
                 </div>
-                <button type="submit" >Join</button>
-              </form>
+                <% if (user == element.pusername0 || user == element.pusername1 || user == element.pusername2 || user == element.pusername3 || user == element.pusername4) { %>
+                  <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + -1%>" method="POST" style="margin-bottom: 120px">
+                    <button type="submit" class = "btn btn-danger">Leave</button>
+                  </form>
+                  <%}
+                else if (element.currpass < element.maxpass) { %>
+                  <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + 1%>" method="POST" style="margin-bottom: 120px">              
+                    <button type="submit" class = "btn btn-primary">Join</button>
+                  </form>
+                <% } %>
             <hr/>
           <% }) %>
         </div>
