@@ -439,7 +439,6 @@ app.post('/discover',(req,res) => {
         });
 });
 
-<<<<<<< HEAD
 app.get('/event', (req, res) =>{
     const eID = req.query.id
     const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
@@ -478,40 +477,15 @@ app.get('/event', (req, res) =>{
               res.status(400);
               console.log(err);
             })
-=======
-app.get('/event', (req, res) => {
-  const eID = req.query.eventID
-  const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
-  const eventQuery = `SELECT * FROM events WHERE eventID = '${eID}';`;
-  const userProf = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
-  db.any(query)
-    .then((comment) => {
-      res.status(201);
-      db.one(eventQuery)
-        .then((event) =>{
-          db.one(userProf)
-          .then((profile)=>{
-            res.status(201);
-            res.render('pages/event', {
-              user : profile,
-              event : event,
-              comment,
-              eID,
-            });
->>>>>>> 3dccfc9cb653603340cc52060751fc6e6685cfb4
           })
       .catch((err) =>{
         res.status(400);
         console.log(err);
       });
     });
-<<<<<<< HEAD
-=======
-  });
 app.get('/driver', (req,res) => {
   
   // const query = `SELECT FROM cars WHERE username = '${req.session.username}';`
->>>>>>> 3dccfc9cb653603340cc52060751fc6e6685cfb4
 
   res.render('pages/driver', {
     eventID : req.query.eventID
