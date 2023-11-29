@@ -10,7 +10,6 @@ const session = require('express-session'); // To set the session object. To sto
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 
-
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -511,6 +510,10 @@ app.post('/transportation', (req, res) => {
 // app.post('/transportation', function(req,res)  {
 
 // })
+// app.get('/ride', function(req,res){
+//   res.render('pages/map');
+// })
+
 
 
 // *****************************************************
