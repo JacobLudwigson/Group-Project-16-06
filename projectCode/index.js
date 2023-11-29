@@ -196,7 +196,8 @@ app.get('/editProfile', function(req,res){
     .then((data)=>{
       res.status(201);
       res.render('pages/editProfile', {
-        user : data[0]
+        user : data[0],
+        error : false
       });
     })
     .catch((err)=>{
@@ -209,6 +210,25 @@ app.get('/editProfile', function(req,res){
 app.post('/editProfile', (req,res) => {
 
   Address = req.body.address;
+  if (Address == ""){
+    var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+
+    db.any(query)
+      .then((data)=>{
+        res.status(201);
+        res.render('pages/editProfile', {
+          error : true,
+          message : "Must specify an address",
+          user : data[0]
+        }); 
+      })
+      .catch((err)=>{
+        console.log(err);
+        res.status(400);
+        res.render('pages/profile')
+      })
+  }
+  else{
   var Tusername = req.session.user.username;
   axios({
     url: `https://api.mapbox.com/search/searchbox/v1/suggest?`,
@@ -279,7 +299,7 @@ app.post('/editProfile', (req,res) => {
   .catch((err)=>{
     console.log(err);
   })
-
+}
 });
 app.get('/profile', (req,res) =>{
   var query = `SELECT * FROM profiles WHERE username = '${req.query.username}';`
@@ -419,6 +439,7 @@ app.post('/discover',(req,res) => {
         });
 });
 
+<<<<<<< HEAD
 app.get('/event', (req, res) =>{
     const eID = req.query.id
     const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
@@ -457,13 +478,65 @@ app.get('/event', (req, res) =>{
               res.status(400);
               console.log(err);
             })
+=======
+app.get('/event', (req, res) => {
+  const eID = req.query.eventID
+  const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
+  const eventQuery = `SELECT * FROM events WHERE eventID = '${eID}';`;
+  const userProf = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+  db.any(query)
+    .then((comment) => {
+      res.status(201);
+      db.one(eventQuery)
+        .then((event) =>{
+          db.one(userProf)
+          .then((profile)=>{
+            res.status(201);
+            res.render('pages/event', {
+              user : profile,
+              event : event,
+              comment,
+              eID,
+            });
+>>>>>>> 3dccfc9cb653603340cc52060751fc6e6685cfb4
           })
       .catch((err) =>{
         res.status(400);
         console.log(err);
       });
     });
+<<<<<<< HEAD
+=======
+  });
+app.get('/driver', (req,res) => {
+  
+  // const query = `SELECT FROM cars WHERE username = '${req.session.username}';`
+>>>>>>> 3dccfc9cb653603340cc52060751fc6e6685cfb4
 
+  res.render('pages/driver', {
+    eventID : req.query.eventID
+  })
+})
+app.post('/driver', (req,res) => {
+  console.log("isitHere?:" + req.query.eventID)
+  const query = `INSERT INTO cars (username,eventID, maxPass) VALUES
+  username = '${req.session.user.username}',
+  eventID = '${req.query.eventID}',
+  maxPass = '${req.body.maxPass}',
+  maxDistPickup = '${req.body.maxDistPickup}',
+  cost = '${req.body.cost}';`
+
+
+  db.any(query)
+    .then((data) =>{
+
+      res.redirect('/event' + '?eventID=' + req.query.eventID);
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.redirect('/event' + '?eventID=' + req.query.eventID);
+    });
+})
 app.post('/event', function (req,res) {
   const query = `INSERT INTO comments (comment, eventID, username) VALUES ($1,'${req.query.id}', '${req.session.user.username}') RETURNING *;`;
 

@@ -49,8 +49,15 @@ CREATE TABLE car (
     carID SERIAL PRIMARY KEY,
     eventID INT,
     username VARCHAR(50),
+<<<<<<< HEAD
     numPass INT,
     currPass INT,
+=======
+    maxPass INT DEFAULT 0,
+    maxDistPickup DECIMAL(10,2),
+    cost DECIMAL(10,2),
+    numPass INT ,
+>>>>>>> 3dccfc9cb653603340cc52060751fc6e6685cfb4
     Pusername VARCHAR(50),
     Pusername1 VARCHAR(50),
     Pusername2 VARCHAR(50),
