@@ -17,10 +17,40 @@
                   <h5 class="card-title"><%-events[counter].performers[0].name-%></h5>
                   <p class="card-text"><%-events[counter].venue.name-%><br><%-events[counter].venue.display_location-%></p>
                 </div>
+
+                <%date0 = new Date(events[counter].datetime_utc);%>
+
+                      <%date0 = date0.toString();%>
+                      <%myDate0 = "";%>
+                      <%counter1 = 0;%>
+                      <%for (var i = 0; i < date0.length; i++)
+                      {
+                        if (counter1 < 3){
+                          if (date0[i] == ' ')
+                          {
+                            counter1++;
+
+                            if (counter1 == 32)
+                            {                                     
+                              myDate0 += ", ";
+                            }
+                            else
+                            {
+                              myDate0 += ' ';
+                            }
+                          }
+                          else
+                          {
+                            myDate0 += date0[i];
+                          }
+                        }
+                        else break;
+                      }%>
+
                 <ul class="list-group list-group-flush">   
-                    <%date0 = new Date(events[counter].datetime_utc)%>
           
-                  <li class="list-group-item"><%-date0.toString()-%></li>
+          
+                  <li class="list-group-item"><%-myDate0-%></li>
                   <li class="list-group-item"><%-events[counter].venue.capacity-%>p Capacity</li>
           
                 </ul>
@@ -44,10 +74,38 @@
                   <h5 class="card-title"><%-events[counter].performers[0].name-%></h5>
                   <p class="card-text"><%-events[counter].venue.name-%><br><%-events[counter].venue.display_location-%></p>
                 </div>
+
+                <%date1 = new Date(events[counter].datetime_utc);%>
+
+                      <%date1 = date1.toString();%>
+                      <%myDate1 = "";%>
+                      <%counter1 = 0;%>
+                      <%for (var i = 0; i < date1.length; i++)
+                      {
+                        if (counter1 < 3){
+                          if (date1[i] == ' ')
+                          {
+                            counter1++;
+
+                            if (counter1 == 32)
+                            {                                     
+                              myDate1 += ", ";
+                            }
+                            else
+                            {
+                              myDate1 += ' ';
+                            }
+                          }
+                          else
+                          {
+                            myDate1 += date1[i];
+                          }
+                        }
+                        else break;
+                      }%>
                 <ul class="list-group list-group-flush">   
-                    <%date0 = new Date(events[counter].datetime_utc)%>
           
-                  <li class="list-group-item"><%-date0.toString()-%></li>
+                  <li class="list-group-item"><%-myDate1-%></li>
                   <li class="list-group-item"><%-events[counter].venue.capacity-%>p Capacity</li>
           
                 </ul>
