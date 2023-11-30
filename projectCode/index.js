@@ -537,7 +537,7 @@ app.post('/driver', (req,res) => {
   const checkIfAlrDriver = `SELECT COUNT(*) FROM car WHERE username = '${req.session.user.username}' AND eventID = '${req.query.eventID}';`
   db.any(checkIfAlrDriver)
   .then((numDriver) => {
-    if (numDriver == 0) {
+    if (numDriver[0].count == '0') {
       const query = `INSERT INTO car (username,eventID, maxPass, maxDistPickup, cost) VALUES
       ('${req.session.user.username}',
       '${req.query.eventID}',
