@@ -443,7 +443,6 @@ app.get('/event', (req, res) =>{
     const eID = req.query.id
     const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
     const userProf = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
-    // const q = `SELECT * FROM events WHERE eventID = '${eID}';`;
     db.any(query)
       .then((comment) => {
         res.status(201);
@@ -532,18 +531,42 @@ app.post('/driver', (req,res) => {
 app.get('/transportation', (req,res) => {
   const eID = req.query.eventID
   const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
-  const userProf = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
-
+  const userProfQuery = `SELECT * FROM profiles WHERE username = '${req.session.user.username}' LIMIT 1;`
+  var count=0;
+  dist = new Array();
   db.any(query)
   .then((data) => {
-    db.any(userProf)
-    .then((profile) => {
-      res.render('pages/transportation', {
-        data,
-        eID,
-        user : req.session.user.username,
-        user: profile,
-      })
+    db.one(userProfQuery)
+    .then((userProfData) =>{ 
+    for(let car of data){
+      const drivProfQuery = `SELECT * FROM profiles WHERE username = '${car.username}' LIMIT 1;`
+        db.any(drivProfQuery)
+          .then((driverProfData) =>{
+            axios({
+              url: `https://api.mapbox.com/directions/v5/mapbox/driving/${userProfData.userlat}%2C${userProfData.userlon}%3B${driverProfData[0].userlat}%2C${driverProfData[0].userlon}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg`,
+              method: 'GET',
+              dataType: 'json',
+              headers: {
+                'Accept-Encoding': 'application/json',
+              },
+            })
+            .then((mapBoxData) =>{
+              var distance = (mapBoxData.data.routes[0].distance/1000)*0.621371192;
+              dist[car.carid] = distance
+              count+=1;
+              if (count == data.length){
+                res.render('pages/transportation', {
+                  data,
+                  eID,
+                  user : req.session.user.username,
+                  dist
+                })
+              }
+            }) 
+
+          })
+        }
+
     })
   });
 });
@@ -558,30 +581,82 @@ app.post('/transportation', (req, res) => {
   const eID = req.query.eventID
   const querry = `UPDATE car SET Pusername${pnum} = '${puser}', currPass = currPass + ${req.query.ct} WHERE username = '${req.query.username}';`;
   const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
+  const userProfQuery = `SELECT * FROM profiles WHERE username = '${req.session.user.username}' LIMIT 1;`
+  const drivProfQuery = `SELECT * FROM profiles WHERE username = '${req.query.username}' LIMIT 1;`
+  var count=0;
+  dist = new Array();
+  db.any(query)
+  .then((data) => {
+    db.one(userProfQuery)
+      
+    .then((userProfData) =>{
+      
+    for(let car of data){
+      console.log(count);
+      const drivProfQuery = `SELECT * FROM profiles WHERE username = '${car.username}' LIMIT 1;`
+        db.any(drivProfQuery)
+          .then((driverProfData) =>{
+            axios({
+              url: `https://api.mapbox.com/directions/v5/mapbox/driving/${userProfData.userlat}%2C${userProfData.userlon}%3B${driverProfData[0].userlat}%2C${driverProfData[0].userlon}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg`,
+              method: 'GET',
+              dataType: 'json',
+              headers: {
+                'Accept-Encoding': 'application/json',
+              },
+            })
+            .then((mapBoxData) =>{
+              var distance = (mapBoxData.data.routes[0].distance/1000)*0.621371192;
+              dist[car.carid] = distance
+              count+=1;
+              if (count == data.length){
+                db.any(querry)
+                .then((moredata) => {
+                  db.any(query)
+                  .then((data) => {
+                    res.render('pages/transportation', {
+                      eID,
+                      moredata,
+                      data,
+                      user : req.session.user.username,
+                      dist
+                    });
+                  })
+                })
+              }
+            }) 
 
-  db.any(querry)
-  .then((moredata) => {
-   
-    db.any(query)
-    .then((data) => {
-      console.log(data);
-      res.render('pages/transportation', {
-        eID,
-        moredata,
-        data,
-        user : req.session.user.username
-      });
+          })
+        }
+
     })
-  })
+  });
+  // db.one(userProfQuery)
+  //   .then((userProfData) =>{
+  //     console.log(userProfData)
+  //     db.one(drivProfQuery)
+  //       .then((driverProfData) =>{
+
+  //         axios({
+  //           url: `https://api.mapbox.com/directions/v5/mapbox/driving/${userProfData.userlat}%2C${userProfData.userlon}%3B${driverProfData.userlat}%2C${driverProfData.userlon}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg`,
+  //           method: 'GET',
+  //           dataType: 'json',
+  //           headers: {
+  //             'Accept-Encoding': 'application/json',
+  //           },
+  //         })
+  //         .then((mapBoxData) =>{
+  //           var distance = (mapBoxData.data.routes[0].distance/1000)*0.621371192;
+  //           console.log(distance);
+            
+  //         }) 
+            
+  //       })
+  //       .catch((err)=>{
+  //         console.log(err);
+  //       })
+  //   })
+
 })
-
-
-// app.post('/transportation', function(req,res)  {
-
-// })
-// app.get('/ride', function(req,res){
-//   res.render('pages/map');
-// })
 
 
 

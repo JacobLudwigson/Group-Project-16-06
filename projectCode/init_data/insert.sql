@@ -43,8 +43,8 @@ INSERT INTO profiles (username) VALUES
 INSERT INTO profiles (username) VALUES
 ('me');
 
-INSERT INTO car (eventID, username, maxPass, currPass) VALUES 
-(6094026, 'somebody', '4', '0');
+-- INSERT INTO car (eventID, username, maxPass, currPass) VALUES 
+-- (6094026, 'somebody', '4', '0');
 
 INSERT INTO car (eventID, username, maxPass, currPass) VALUES 
 (6094026, 'john', '4', '0');

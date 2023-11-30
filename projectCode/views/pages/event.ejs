@@ -43,10 +43,18 @@
         direc,
         'top-right'
         );
+        direc.on('route', function (event) {
+        // if (event.route && event.route[0] && event.route[0].distance) {
+            const distanceInMeters = event.route[0].distance;
+            const distanceInMiles = distanceInMeters * 0.000621371; // Convert meters to miles
+            console.log('Distance: ' + distanceInMiles.toFixed(2) + ' miles');
+        // }
+      });
         direc.setOrigin('<%-user.address%>');
         // console.log('<%-user.name %>');
         direc.setDestination('<%-events[0].venue.address%>');
         // console.log(<%=events[0].venue.address %>);
+        console.log(direc);
 
         </script>
     
