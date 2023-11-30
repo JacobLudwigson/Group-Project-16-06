@@ -4,13 +4,16 @@
 
 Our appilication eventGO, allows any user to search for local events in their area, comment, and connect with users, and carpool with eachother. 
 
-# Contributors: Jacob Ludwigson, Michael Rasati, Daniel Alba, Jacob Lancaster.
+## Contributors: 
+Jacob Ludwigson, Michael Rasati, Daniel Alba, Jacob Lancaster.
 
-**Technology stack:** Nodejs, EJS, SQL, HTML, CSS
+## Technology stack: 
+Nodejs, EJS, SQL, HTML, CSS
 
-**Prerequisites:** Docker is needed for this website.
+## Prerequisites:
+Docker is needed for this website.
 
-**How to run:**
+## How to run:
 Once the repository is cloned, navigate into the projectCode folder. 
 Once in the folder, run the command in the terminal:
 ```bash 
@@ -22,10 +25,10 @@ Once the connection is successful, navigate to your browser and input into the s
 http://localhost:3000/
 ```
 This should bring you to the EventGO login page. 
-**How to run the tests:**
+##How to run tests:
 When the docker is run, the tests should appear in the terminal. They should display whether the test have passed or not. 
 
-**Deployed Application:**
+## Deployed Application:
 ```bash
 http://localhost:3000/
 ```
