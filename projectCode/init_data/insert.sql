@@ -25,6 +25,23 @@ INSERT INTO events (eventID) VALUES (0);
 INSERT INTO events (eventID) VALUES (0);
 INSERT INTO events (eventID) VALUES (0);
 
+INSERT INTO users (username, password) VALUES
+('somebody', '123');
+
+INSERT INTO users (username, password) VALUES
+('me', '123');
+
+INSERT INTO users (username, password) VALUES
+('john', '123');
+
+INSERT INTO profiles (username) VALUES
+('somebody');
+
+INSERT INTO profiles (username) VALUES
+('john');
+
+INSERT INTO profiles (username) VALUES
+('me');
 
 INSERT INTO car (eventID, username, maxPass, currPass) VALUES 
 (6094026, 'somebody', '4', '0');

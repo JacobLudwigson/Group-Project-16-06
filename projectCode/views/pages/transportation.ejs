@@ -15,7 +15,7 @@
          
         <% arr.forEach(element => {%>
             <body>
-              <a class="link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
+                <a class="nav-link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
               <%= element.currpass %> / <%= element.maxpass %>
             </body>
 
@@ -24,21 +24,6 @@
                   Driver is asking : $<%= element.cost %> for pickup.
                   <% } %>
                 </div>
-                <% //if(element.pusername0) {%>
-                    <%= //element.pusername0%>
-                <%///}%>
-                <% //if(element.pusername1) {%>
-                    <%=//element.pusername1%>
-                <% //}%>
-                <%// if(element.pusername2) {%>
-                    <%= //element.pusername2%>
-                <%//}%>
-                <% //if(element.pusername3) {%>
-                    <%=// element.pusername3%>
-                <%//}%>
-                <% //if(element.pusername4) {%>
-                    <%=// element.pusername4%>
-                <%// }%>
                 <% if (user == element.pusername0 || user == element.pusername1 || user == element.pusername2 || user == element.pusername3 || user == element.pusername4) { %>
                   <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + -1%>" method="POST" >
                     <button type="submit" class = "btn btn-danger">Leave</button>

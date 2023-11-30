@@ -532,13 +532,18 @@ app.post('/driver', (req,res) => {
 app.get('/transportation', (req,res) => {
   const eID = req.query.eventID
   const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
+  const userProf = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
 
   db.any(query)
   .then((data) => {
-    res.render('pages/transportation', {
-      data,
-      eID,
-      user : req.session.user.username
+    db.any(userProf)
+    .then((profile) => {
+      res.render('pages/transportation', {
+        data,
+        eID,
+        user : req.session.user.username,
+        user: profile,
+      })
     })
   });
 });
