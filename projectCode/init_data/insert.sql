@@ -40,21 +40,24 @@ INSERT INTO profiles (username) VALUES
 INSERT INTO profiles (username) VALUES
 ('john');
 
-INSERT INTO profiles (username) VALUES
-('me');
+INSERT INTO profiles (username, first_name, address, userLat, userLon) VALUES
+('Populator', '', 'Boulder, Colorado, United States of America', -105.373507,40.087835);
+
+-- INSERT INTO profiles (username, first_name, address, userLat, userLon) VALUES
+-- ('Populator', '', 'Boulder, Colorado, United States of America', -105.373507,40.087835);
+
+-- -- INSERT INTO car (eventID, username, maxPass, currPass) VALUES 
+-- -- (6094026, 'somebody', '4', '0');
 
 -- INSERT INTO car (eventID, username, maxPass, currPass) VALUES 
--- (6094026, 'somebody', '4', '0');
+-- (6094026, 'john', '4', '0');
 
-INSERT INTO car (eventID, username, maxPass, currPass) VALUES 
-(6094026, 'john', '4', '0');
-
--- INSERT INTO car (eventID, username, maxPass, currPass) VALUES 
--- (6094026, 'somebody', '4', '0');
+-- -- INSERT INTO car (eventID, username, maxPass, currPass) VALUES 
+-- -- (6094026, 'somebody', '4', '0');
 
 
-INSERT INTO car (eventID, username, maxPass, currPass, Pusername0) VALUES 
-(6094026, 'me', '4', '0', 'john');
+-- INSERT INTO car (eventID, username, maxPass, currPass, Pusername0) VALUES 
+-- (6094026, 'me', '4', '0', 'john');
 
 
 -- INSERT INTO car (eventID, username, maxPass, currPass, Pusername0) VALUES 

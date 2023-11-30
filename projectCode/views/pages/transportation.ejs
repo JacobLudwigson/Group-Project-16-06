@@ -20,6 +20,12 @@
             </body>
 
               <div class="mb-3"  id = "joinCarpool">
+                <h6>Riders: 
+                <% for(let i = 0; i < 5; i++){ %>
+                  <% if (element[`pusername${i}`] != null || element[`pusername${i}`] != ''){ %>
+                    <a class="nav-link" href="/profile?username=<%= element[`pusername${i}`] %>"><b><%= element[`pusername${i}`] %></b></a></h6>
+                    <% } %>
+                <%} %>
                 <% if (element.cost != 0) { %>
                   <h6>Driver is asking : $<%= element.cost %> for pickup (<%= dist[element.carid].toFixed(2) %> miles away).</h6>
                   

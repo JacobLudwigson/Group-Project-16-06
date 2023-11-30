@@ -287,18 +287,48 @@ app.post('/editProfile', (req,res) => {
           res.redirect('/profile' + "?username=" + Tusername);
         })
         .catch((err) =>{
-          res.status(400);
-          console.log(err);
-          res.render('pages/register');
+          console.log(err)
+          var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+      
+          db.any(query)
+            .then((data)=>{
+              res.status(201);
+              res.render('pages/editProfile', {
+                error : true,
+                message : "Must specify a valid address",
+                user : data[0]
+              }); 
+            })
+            .catch((err)=>{
+              console.log(err);
+              res.status(400);
+              res.render('pages/profile')
+            }) 
         });
       })
       .catch((err)=>{
         console.log(err);
       })
   })
-  .catch((err)=>{
-    console.log(err);
-  })
+  .catch((err) =>{
+    console.log(err)
+    var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+
+    db.any(query)
+      .then((data)=>{
+        res.status(201);
+        res.render('pages/editProfile', {
+          error : true,
+          message : "Must specify a valid address",
+          user : data[0]
+        }); 
+      })
+      .catch((err)=>{
+        console.log(err);
+        res.status(400);
+        res.render('pages/profile')
+      }) 
+  });
 }
 });
 app.get('/profile', (req,res) =>{
@@ -504,29 +534,36 @@ app.get('/driver', (req,res) => {
   })
 })
 app.post('/driver', (req,res) => {
-  const query = `INSERT INTO car (username,eventID, maxPass, maxDistPickup, cost) VALUES
-  ('${req.session.user.username}',
-  '${req.query.eventID}',
-  '${req.body.maxPass}',
-  '${req.body.maxDistPickup}',
-  '${req.body.cost}');`
+  const checkIfAlrDriver = `SELECT COUNT(*) FROM car WHERE username = '${req.session.user.username}' AND eventID = '${req.query.eventID}';`
+  db.any(checkIfAlrDriver)
+  .then((numDriver) => {
+    if (numDriver == 0) {
+      const query = `INSERT INTO car (username,eventID, maxPass, maxDistPickup, cost) VALUES
+      ('${req.session.user.username}',
+      '${req.query.eventID}',
+      '${req.body.maxPass}',
+      '${req.body.maxDistPickup}',
+      '${req.body.cost}');`
 
-  // if ((req.body.maxDistPickup == undefined) || (req.body.maxPass == undefined) || (req.body.cost == undefined)){
-  //   res.render('pages/driver', {
-  //     eventID : req.query.eventID,
-  //     error : true,
-  //     message : 'Must Fill out'
-  //   })
-  // }
-  db.any(query)
-    .then((data) =>{
+      db.any(query)
+        .then(() =>{
+          res.redirect('/event' + '?id=' + req.query.eventID);
+        })
+        .catch((err)=>{
+          console.log(err)
+          res.redirect('/event' + '?id=' + req.query.eventID);
+        });
+    }
+    else {
+      res.redirect('/event' + '?id=' + req.query.eventID);
+    }
 
-      res.redirect('/event' + '?id=' + req.query.eventID);
-    })
-    .catch((err)=>{
-      console.log(err)
-      res.redirect('/event' + '?id=' + req.query.eventID);
-    });
+  })
+  .catch((err) => {
+    console.log(err)
+    res.redirect('/event' + '?id=' + req.query.eventID);
+  })
+  
 })
 app.get('/transportation', (req,res) => {
   const eID = req.query.eventID
@@ -536,6 +573,15 @@ app.get('/transportation', (req,res) => {
   dist = new Array();
   db.any(query)
   .then((data) => {
+    if (data.length == 0){
+      dist = [];
+      res.render('pages/transportation', {
+        data,
+        eID,
+        user : req.session.user.username,
+        dist
+      })
+    }
     db.one(userProfQuery)
     .then((userProfData) =>{ 
     for(let car of data){
@@ -570,91 +616,151 @@ app.get('/transportation', (req,res) => {
     })
   });
 });
-
 app.post('/transportation', (req, res) => {
   var puser = ""
-  var pnum =  0 < req.query.passengerNum-1 ? 0 : req.query.passengerNum-1;
-  if(req.query.ct != '-1') {
-    puser = req.session.user.username
-    pnum += 1;
-  }
+  var pnum;
+  // var pnum =  0 < req.query.passengerNum-1 ? 0 : req.query.passengerNum-1;
   const eID = req.query.eventID
-  const querry = `UPDATE car SET Pusername${pnum} = '${puser}', currPass = currPass + ${req.query.ct} WHERE username = '${req.query.username}';`;
-  const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
-  const userProfQuery = `SELECT * FROM profiles WHERE username = '${req.session.user.username}' LIMIT 1;`
-  const drivProfQuery = `SELECT * FROM profiles WHERE username = '${req.query.username}' LIMIT 1;`
-  var count=0;
-  dist = new Array();
-  db.any(query)
-  .then((data) => {
-    db.one(userProfQuery)
-      
-    .then((userProfData) =>{
-      
-    for(let car of data){
-      console.log(count);
-      const drivProfQuery = `SELECT * FROM profiles WHERE username = '${car.username}' LIMIT 1;`
-        db.any(drivProfQuery)
-          .then((driverProfData) =>{
-            axios({
-              url: `https://api.mapbox.com/directions/v5/mapbox/driving/${userProfData.userlat}%2C${userProfData.userlon}%3B${driverProfData[0].userlat}%2C${driverProfData[0].userlon}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg`,
-              method: 'GET',
-              dataType: 'json',
-              headers: {
-                'Accept-Encoding': 'application/json',
-              },
-            })
-            .then((mapBoxData) =>{
-              var distance = (mapBoxData.data.routes[0].distance/1000)*0.621371192;
-              dist[car.carid] = distance
-              count+=1;
-              if (count == data.length){
-                db.any(querry)
-                .then((moredata) => {
-                  db.any(query)
-                  .then((data) => {
-                    res.render('pages/transportation', {
-                      eID,
-                      moredata,
-                      data,
-                      user : req.session.user.username,
-                      dist
-                    });
+  if (req.query.ct == '-1'){
+    var addQuery = `SELECT * FROM car 
+    WHERE eventID = '${eID}' AND
+    username = '${req.query.username}' LIMIT 1;`
+    var joinUser = req.session.user.username;
+    db.one(addQuery)
+      .then((addQueryData)=>{
+        if (addQueryData.pusername0 == joinUser){pnum=0}
+        else if (addQueryData.pusername1 == joinUser){pnum=1}
+        else if (addQueryData.pusername2 == joinUser){pnum=2}
+        else if (addQueryData.pusername3 == joinUser){pnum=3}
+        else if (addQueryData.pusername4 == joinUser){pnum=4}
+        const querry = `UPDATE car SET Pusername${pnum} = '${puser}', currPass = currPass + ${req.query.ct} WHERE username = '${req.query.username}';`;
+        const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
+        const userProfQuery = `SELECT * FROM profiles WHERE username = '${req.session.user.username}' LIMIT 1;`
+        const drivProfQuery = `SELECT * FROM profiles WHERE username = '${req.query.username}' LIMIT 1;`
+        var count=0;
+        dist = new Array();
+        db.any(query)
+        .then((data) => {
+          db.one(userProfQuery)
+            
+          .then((userProfData) =>{
+            
+          for(let car of data){
+            const drivProfQuery = `SELECT * FROM profiles WHERE username = '${car.username}' LIMIT 1;`
+              db.any(drivProfQuery)
+                .then((driverProfData) =>{
+                  axios({
+                    url: `https://api.mapbox.com/directions/v5/mapbox/driving/${userProfData.userlat}%2C${userProfData.userlon}%3B${driverProfData[0].userlat}%2C${driverProfData[0].userlon}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg`,
+                    method: 'GET',
+                    dataType: 'json',
+                    headers: {
+                      'Accept-Encoding': 'application/json',
+                    },
                   })
+                  .then((mapBoxData) =>{
+                    var distance = (mapBoxData.data.routes[0].distance/1000)*0.621371192;
+                    dist[car.carid] = distance
+                    count+=1;
+                    if (count == data.length){
+                      db.any(querry)
+                      .then((moredata) => {
+                        db.any(query)
+                        .then((data) => {
+                          res.render('pages/transportation', {
+                            eID,
+                            moredata,
+                            data,
+                            user : req.session.user.username,
+                            dist
+                          });
+                        })
+                      })
+                    }
+                  }) 
+      
                 })
               }
-            }) 
-
+      
           })
-        }
-
-    })
-  });
-  // db.one(userProfQuery)
-  //   .then((userProfData) =>{
-  //     console.log(userProfData)
-  //     db.one(drivProfQuery)
-  //       .then((driverProfData) =>{
-
-  //         axios({
-  //           url: `https://api.mapbox.com/directions/v5/mapbox/driving/${userProfData.userlat}%2C${userProfData.userlon}%3B${driverProfData.userlat}%2C${driverProfData.userlon}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg`,
-  //           method: 'GET',
-  //           dataType: 'json',
-  //           headers: {
-  //             'Accept-Encoding': 'application/json',
-  //           },
-  //         })
-  //         .then((mapBoxData) =>{
-  //           var distance = (mapBoxData.data.routes[0].distance/1000)*0.621371192;
-  //           console.log(distance);
+        });
+      })
+      .catch((err) =>{
+        console.log(err)
+        res.redirect('/event' + '?id=' + req.query.eventID);
+      });
+  }
+  else if(req.query.ct != '-1') {
+    var addQuery = `SELECT * FROM car 
+    WHERE eventID = '${eID}' AND
+    username = '${req.query.username}' LIMIT 1;`
+    db.one(addQuery)
+      .then((addQueryData)=>{
+        console.log(req.session.user.username);
+        puser = req.session.user.username
+        if (addQueryData.pusername0 == '' || addQueryData.pusername0 == null){pnum=0}
+        else if (addQueryData.pusername1 == '' || addQueryData.pusername1 == null){pnum=1}
+        else if (addQueryData.pusername2 == '' || addQueryData.pusername2 == null){pnum=2}
+        else if (addQueryData.pusername3 == '' || addQueryData.pusername3 == null){pnum=3}
+        else if (addQueryData.pusername4 == '' || addQueryData.pusername4 == null){pnum=4}
+        const querry = `UPDATE car SET Pusername${pnum} = '${puser}', currPass = currPass + ${req.query.ct} WHERE username = '${req.query.username}';`;
+        const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
+        const userProfQuery = `SELECT * FROM profiles WHERE username = '${req.session.user.username}' LIMIT 1;`
+        const drivProfQuery = `SELECT * FROM profiles WHERE username = '${req.query.username}' LIMIT 1;`
+        var count=0;
+        dist = new Array();
+        db.any(query)
+        .then((data) => {
+          db.one(userProfQuery)
             
-  //         }) 
+          .then((userProfData) =>{
             
-  //       })
-  //       .catch((err)=>{
-  //         console.log(err);
-  //       })
-  //   })
+          for(let car of data){
+            const drivProfQuery = `SELECT * FROM profiles WHERE username = '${car.username}' LIMIT 1;`
+              db.any(drivProfQuery)
+                .then((driverProfData) =>{
+                  axios({
+                    url: `https://api.mapbox.com/directions/v5/mapbox/driving/${userProfData.userlat}%2C${userProfData.userlon}%3B${driverProfData[0].userlat}%2C${driverProfData[0].userlon}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg`,
+                    method: 'GET',
+                    dataType: 'json',
+                    headers: {
+                      'Accept-Encoding': 'application/json',
+                    },
+                  })
+                  .then((mapBoxData) =>{
+                    var distance = (mapBoxData.data.routes[0].distance/1000)*0.621371192;
+                    dist[car.carid] = distance
+                    count+=1;
+                    if (count == data.length){
+                      db.any(querry)
+                      .then((moredata) => {
+                        db.any(query)
+                        .then((data) => {
+                          res.render('pages/transportation', {
+                            eID,
+                            moredata,
+                            data,
+                            user : req.session.user.username,
+                            dist
+                          });
+                        })
+                      })
+                    }
+                  }) 
+      
+                })
+              }
+      
+          })
+        });
+      })
+      .catch((err) =>{
+        console.log(err)
+        res.redirect('/event' + '?id=' + req.query.eventID);
+      });
+  }
+  else {
+    res.render('pages/register');
+  }
 
 })
 
