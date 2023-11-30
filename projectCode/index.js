@@ -443,6 +443,7 @@ app.get('/event', (req, res) =>{
     const eID = req.query.id
     const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
     const userProf = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+    // const q = `SELECT * FROM events WHERE eventID = '${eID}';`;
     db.any(query)
       .then((comment) => {
         res.status(201);

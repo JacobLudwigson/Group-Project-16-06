@@ -1,6 +1,6 @@
 <%- include ('../partials/head') %> <%- include ('../partials/menu') %>
 
-<div class="container" style="margin-top:50px">
+<div class="container" style="margin-top:50px" id="carpool">
     <!-- THE REST OF YOUR HTML CODE GOES HERE -->
     <a class="link" href="/event?id=<%=eID%>"><b>Event Page</b></a>
     <h1>Carpool Offers: </h1>
@@ -24,13 +24,28 @@
                   Driver is asking : $<%= element.cost %> for pickup.
                   <% } %>
                 </div>
+                <% //if(element.pusername0) {%>
+                    <%= //element.pusername0%>
+                <%///}%>
+                <% //if(element.pusername1) {%>
+                    <%=//element.pusername1%>
+                <% //}%>
+                <%// if(element.pusername2) {%>
+                    <%= //element.pusername2%>
+                <%//}%>
+                <% //if(element.pusername3) {%>
+                    <%=// element.pusername3%>
+                <%//}%>
+                <% //if(element.pusername4) {%>
+                    <%=// element.pusername4%>
+                <%// }%>
                 <% if (user == element.pusername0 || user == element.pusername1 || user == element.pusername2 || user == element.pusername3 || user == element.pusername4) { %>
-                  <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + -1%>" method="POST" style="margin-bottom: 120px">
+                  <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + -1%>" method="POST" >
                     <button type="submit" class = "btn btn-danger">Leave</button>
                   </form>
                   <%}
                 else if (element.currpass < element.maxpass) { %>
-                  <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + 1%>" method="POST" style="margin-bottom: 120px">              
+                  <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + 1%>" method="POST" >              
                     <button type="submit" class = "btn btn-primary">Join</button>
                   </form>
                 <% } %>
