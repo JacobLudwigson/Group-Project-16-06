@@ -45,3 +45,17 @@ CREATE TABLE events (
     imageUrl VARCHAR(255)
 );
 
+CREATE TABLE car (
+    carID SERIAL PRIMARY KEY,
+    eventID INT,
+    username VARCHAR(50),
+    maxPass INT DEFAULT 0,
+    currPass INT DEFAULT 0,
+    maxDistPickup DECIMAL(10,2) DEFAULT 0,
+    cost DECIMAL(10,2) DEFAULT 0.0,
+    Pusername0 VARCHAR(50),
+    Pusername1 VARCHAR(50),
+    Pusername2 VARCHAR(50),
+    Pusername3 VARCHAR(50),
+    Pusername4 VARCHAR(50)
+);

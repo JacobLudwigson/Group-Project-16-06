@@ -9,7 +9,8 @@
         </div> 
         <div class = "container" id = "eventHeader">
             <h1><%-events[0].performers[0].name-%></h1>
-            <h6><%-events[0].venue.state-%></h6>
+            <h6><%-events[0].venue.city-%>, <%-events[0].venue.state-%></h6>
+            <h6><%- events[0].venue.name %></h6>
 
             
         </div>
@@ -18,7 +19,7 @@
 
         <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
         <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
-        <div id="map" style="background-color:#292929; position:absolute;top:60px;right:20px; height: 300px; width:600px;" class="map_canvas-in mapboxgl-map"></div>
+        <div id="map" style="background-color:#292929; position:absolute;top:75px;right:20px; height: 300px; width:600px;" class="map_canvas-in mapboxgl-map"></div>
         <!-- <div id="map" "></div> -->
         
     
@@ -50,16 +51,26 @@
         </script>
     
     </div>
-    <div class = "container-fluid">
-
-    </div>    
-  <div class="container" style="margin-top:200px">
+    <div class = "container-fluid" style = "margin-left: 205px; margin-top: 200px;">
+      <button class = "btn btn-primary"><a class="nav-link" href="/driver?eventID=<%=eID%>"><b>I Can Drive</b></a></button>
+      <button class = "btn btn-primary"><a class="nav-link" href="/transportation?eventID=<%=eID%>"><b>Im Looking for a ride!</b></a></button>
+    </div>
+  <div class="container" id="commentSection" >
     <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+      <div class="mb-3">
+      </div>
+      <!-- <button class = "btn btn-primary"><a class="nav-link" href="/driver?eventID=<%=eID%>"><b>I Can Drive</b></a></button>
+      <button class = "btn btn-primary"><a class="nav-link" href="/transportation?eventID=<%=eID%>"><b>Im Looking for a ride!</b></a></button> -->
+    <!-- <form action="<%-"/transportation" + "?eventID=" + eID-%>" method="POST">
+      <div class="mb-3">
+      </div>
+      <button type="submit" value="comment">Want to offer a ride?</button>
+    </form> -->
     <h1>Comments</h1>
     <hr/>
     <div class="overflow-auto">
     <div class="row">
-      <div class="col-sm" height="200">
+      <div class="col-sm" height="50">
         <% comment.forEach(element => {%>
           <body>
             <a class="nav-link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
@@ -70,14 +81,11 @@
       </div>
     </div>
   </div>
-    <form action="<%-"/event" + "?id=" + events[0].id-%>" method="POST" style="margin-bottom: 120px">
-      <div class="mb-3">
+    <form action="<%-"/event" + "?id=" + events[0].id-%>" method="POST" style="margin-bottom: 20px">
         <input type="text" id="comment" name="comment"/>
-      </div>
-      <button type="submit" value="comment">Submit</button>
+      <button class="btn btn-primary" value="comment">Comment</button>
     </form>
   </div>
-
 </main>
 
 <%- include ('../partials/footer') %>

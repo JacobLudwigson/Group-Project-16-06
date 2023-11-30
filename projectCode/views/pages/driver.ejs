@@ -1,0 +1,41 @@
+<%- include ('../partials/head') %>
+<%- include ('../partials/menu') %>
+
+<main>
+
+<div class="container rounded bg-grey mt-5 mb-5">
+  <div class="row">
+      <div class="col-md-3 border-right">
+      </div>
+      <div class="col-md-5 border-right">
+          <div class="p-3 py-5">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 style = "font-weight: bold;">
+                    Driver Information:
+                </h1>
+
+              </div>
+              <form action = <%="/driver?eventID="+eventID%> method = "POST" class = "form-group">
+              <div class="row mt-2">
+                  <div class="col-md-6"><label class="labels">Max Passengers</label><input type="number" id="maxPass" name="maxPass" class = "form-control" required/></div>
+                  <div class="col-md-6"><label class="labels">Max Distance Pickup (Miles)</label><input type="number" id="maxDistPickup" name="maxDistPickup" class = "form-control" required/></div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-12"><label class="labels">Pickup Cost: (Dollars)</label><input type="number" id="cost" name="cost" class = "form-control" required/></div> </div>
+                <div class="mt-5 text-center"><button class="btn btn-primary" type="submit">Submit Driver Info</button></div>
+        </form>
+          </div>
+      </div>
+      
+      <div class="col-md-4">
+          <div class="p-3 py-5">
+                
+          </div>
+      </div>
+  </div>
+</div>
+</div>
+</div>
+</main>
+
+<% include('../partials/footer') %>

@@ -10,7 +10,6 @@ const session = require('express-session'); // To set the session object. To sto
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 
-
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -197,7 +196,8 @@ app.get('/editProfile', function(req,res){
     .then((data)=>{
       res.status(201);
       res.render('pages/editProfile', {
-        user : data[0]
+        user : data[0],
+        error : false
       });
     })
     .catch((err)=>{
@@ -210,6 +210,25 @@ app.get('/editProfile', function(req,res){
 app.post('/editProfile', (req,res) => {
 
   Address = req.body.address;
+  if (Address == ""){
+    var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+
+    db.any(query)
+      .then((data)=>{
+        res.status(201);
+        res.render('pages/editProfile', {
+          error : true,
+          message : "Must specify an address",
+          user : data[0]
+        }); 
+      })
+      .catch((err)=>{
+        console.log(err);
+        res.status(400);
+        res.render('pages/profile')
+      })
+  }
+  else{
   var Tusername = req.session.user.username;
   axios({
     url: `https://api.mapbox.com/search/searchbox/v1/suggest?`,
@@ -280,7 +299,7 @@ app.post('/editProfile', (req,res) => {
   .catch((err)=>{
     console.log(err);
   })
-
+}
 });
 app.get('/profile', (req,res) =>{
   var query = `SELECT * FROM profiles WHERE username = '${req.query.username}';`
@@ -424,6 +443,7 @@ app.get('/event', (req, res) =>{
     const eID = req.query.id
     const query = `SELECT * FROM comments WHERE eventID = '${eID}';`;
     const userProf = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+    // const q = `SELECT * FROM events WHERE eventID = '${eID}';`;
     db.any(query)
       .then((comment) => {
         res.status(201);
@@ -444,6 +464,7 @@ app.get('/event', (req, res) =>{
               })
               .then(results =>{
                 res.render('pages/event', {
+                  eID,
                   user : profile,
                   comment,
                   events : results.data.events
@@ -475,6 +496,87 @@ app.post('/event', function (req,res) {
 app.get('/map', function(req,res){
   res.render('pages/map');
 })
+app.get('/driver', (req,res) => {
+  
+  // const query = `SELECT FROM cars WHERE username = '${req.session.username}';`
+
+  res.render('pages/driver', {
+    eventID : req.query.eventID
+  })
+})
+app.post('/driver', (req,res) => {
+  const query = `INSERT INTO car (username,eventID, maxPass, maxDistPickup, cost) VALUES
+  ('${req.session.user.username}',
+  '${req.query.eventID}',
+  '${req.body.maxPass}',
+  '${req.body.maxDistPickup}',
+  '${req.body.cost}');`
+
+  // if ((req.body.maxDistPickup == undefined) || (req.body.maxPass == undefined) || (req.body.cost == undefined)){
+  //   res.render('pages/driver', {
+  //     eventID : req.query.eventID,
+  //     error : true,
+  //     message : 'Must Fill out'
+  //   })
+  // }
+  db.any(query)
+    .then((data) =>{
+
+      res.redirect('/event' + '?id=' + req.query.eventID);
+    })
+    .catch((err)=>{
+      console.log(err)
+      res.redirect('/event' + '?id=' + req.query.eventID);
+    });
+})
+app.get('/transportation', (req,res) => {
+  const eID = req.query.eventID
+  const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
+
+  db.any(query)
+  .then((data) => {
+    res.render('pages/transportation', {
+      data,
+      eID,
+      user : req.session.user.username
+    })
+  });
+});
+
+app.post('/transportation', (req, res) => {
+  var puser = ""
+  var pnum =  0 < req.query.passengerNum-1 ? 0 : req.query.passengerNum-1;
+  if(req.query.ct != '-1') {
+    puser = req.session.user.username
+    pnum += 1;
+  }
+  const eID = req.query.eventID
+  const querry = `UPDATE car SET Pusername${pnum} = '${puser}', currPass = currPass + ${req.query.ct} WHERE username = '${req.query.username}';`;
+  const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
+
+  db.any(querry)
+  .then((moredata) => {
+   
+    db.any(query)
+    .then((data) => {
+      console.log(data);
+      res.render('pages/transportation', {
+        eID,
+        moredata,
+        data,
+        user : req.session.user.username
+      });
+    })
+  })
+})
+
+
+// app.post('/transportation', function(req,res)  {
+
+// })
+// app.get('/ride', function(req,res){
+//   res.render('pages/map');
+// })
 
 
 
