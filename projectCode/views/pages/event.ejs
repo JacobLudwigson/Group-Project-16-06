@@ -3,11 +3,10 @@
 
 <main>
     <div class = "container-fluid" id = "indEventCont">
-        <div class = "container" id = "indEventPic" style = "position:absolute;top:120px; right: 80px; left:20px; height: 200px; width:200px;">
-            <img src = "<%-events[0].performers[0].image-%>" height = "200px" width = "200px" alt = "Artist picture">
-            <%-user.first_name%>
+        <div class = "container" id = "indEventPic" style = "position:absolute;top:70px; left:90px; height: 200px; width:200px;">
+            <img src = "<%-events[0].performers[0].image-%>" height = "270px" width = "350px" alt = "Artist picture" style="border: 5px solid #2f2d2d">
         </div> 
-        <div class = "container" id = "eventHeader">
+        <div class = "container" id = "eventHeader" style = "position:absolute;top:65px; left:500px;">
             <h1><%-events[0].performers[0].name-%></h1>
             <h6><%-events[0].venue.city-%>, <%-events[0].venue.state-%></h6>
             <h6><%- events[0].venue.name %></h6>
@@ -19,7 +18,7 @@
 
         <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
         <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
-        <div id="map" style="background-color:#292929; position:absolute;top:75px;right:20px; height: 300px; width:600px;" class="map_canvas-in mapboxgl-map"></div>
+        <div id="map" style="background-color:#292929; position:absolute;top:75px;right:100px; height: 300px; width:450px;border: 5px solid #2f2d2d" class="map_canvas-in mapboxgl-map"></div>
         <!-- <div id="map" "></div> -->
         
     
@@ -51,8 +50,8 @@
         </script>
     
     </div>
-    <div class = "container-fluid" style = "margin-left: 205px; margin-top: 200px;">
-      <button class = "btn btn-primary"><a class="nav-link" href="/driver?eventID=<%=eID%>"><b>I Can Drive</b></a></button>
+    <div class = "container-fluid" style = "margin-left: 207px; margin-top: 300px;">
+      <button class = "btn btn-primary" style="position: absolute;left: 100px;"><a class="nav-link" href="/driver?eventID=<%=eID%>"><b>I Can Drive</b></a></button>
       <button class = "btn btn-primary"><a class="nav-link" href="/transportation?eventID=<%=eID%>"><b>Im Looking for a ride!</b></a></button>
     </div>
   <div class="container" id="commentSection" >
