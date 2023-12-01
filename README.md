@@ -21,6 +21,10 @@ Link: https://account.mapbox.com/auth/signup/
 
 Once you have your access token and client id create a .env file structured as such
 
+## How to run:
+
+Once the repository is cloned, create a .env file and fill it with the following:
+```bash 
 POSTGRES_USER="postgres"
 POSTGRES_PASSWORD="pwd"
 POSTGRES_DB="users_db"
@@ -28,10 +32,8 @@ POSTGRES_DB="users_db"
 SESSION_SECRET="super duper secret!"
 API_KEY="<Your Seat Geek clientid>"
 access_token = "<Your Mapbox Access Token>"
-
-## How to run:
-Once the repository is cloned, navigate into the projectCode folder. 
-Once in the folder, run the command in the terminal:
+```
+change to the projectCode folder, and run the command:
 ```bash 
 docker compose up
 ```
@@ -42,6 +44,10 @@ http://localhost:3000/
 ```
 This should bring you to the EventGO login page. 
 ## How to run tests:
+Navigate to the package.json file, and at the bottom line, change the line to be:
+```bash
+"testandrun": "npm run prestart && npm run test && npm start"
+```
 When the docker is run, the tests should appear in the terminal. They should display whether the test have passed or not. 
 
 ## Deployed Application:
