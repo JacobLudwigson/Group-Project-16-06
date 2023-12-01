@@ -5,14 +5,11 @@
     <div class = "container-fluid" id = "indEventCont">
         <div class = "container" id = "indEventPic">
             <img src = "<%-events[0].performers[0].image-%>" alt = "Artist picture">
-            <%-user.first_name%>
         </div> 
         <div class = "container" id = "eventHeader">
             <h1><%-events[0].performers[0].name-%></h1>
             <h6><%-events[0].venue.city-%>, <%-events[0].venue.state-%></h6>
             <h6><%- events[0].venue.name %></h6>
-
-            
         </div>
     </div>
     <div class = "container">
@@ -21,10 +18,6 @@
         <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
         <div id="map" class="map_canvas-in mapboxgl-map"></div>
         <!-- <div id="map" "></div> -->
-        
-    
-    
-       
         <script>
             mapboxgl.accessToken = 'pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg';
         const map = new mapboxgl.Map({
@@ -51,39 +44,39 @@
         </script>
     
     </div>
-    <div class = "container-fluid" style = "margin-left: 300px; margin-top: 240px;">
+    <div class = "container" id="ride-buttons" style="position: relative">
       <button class = "btn btn-primary" style="width: 297px;"><a class="nav-link" href="/driver?eventID=<%=eID%>"><b>I Can Drive</b></a></button>
       <button class = "btn btn-primary" style="width: 297px;"><a class="nav-link" href="/transportation?eventID=<%=eID%>"><b>Im Looking for a ride!</b></a></button>
     </div>
-  <div class="container" id="commentSection" >
-    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
-      <div class="mb-3">
+    <div class="container" id="commentSection" style="position: relative" >
+      <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+        <div class="mb-3">
+        </div>
+        <!-- <button class = "btn btn-primary"><a class="nav-link" href="/driver?eventID=<%=eID%>"><b>I Can Drive</b></a></button>
+        <button class = "btn btn-primary"><a class="nav-link" href="/transportation?eventID=<%=eID%>"><b>Im Looking for a ride!</b></a></button> -->
+      <!-- <form action="<%-"/transportation" + "?eventID=" + eID-%>" method="POST">
+        <div class="mb-3">
+        </div>
+        <button type="submit" value="comment">Want to offer a ride?</button>
+      </form> -->
+      <h1>Comments</h1>
+      <hr/>
+      <div class="row">
+        <div class="col-sm" height="50">
+          <% comment.forEach(element => {%>
+            <body>
+              <a class="nav-link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
+              <%= element.comment %>
+            </body>
+            <hr/>
+          <% }) %>
+        </div>
       </div>
-      <!-- <button class = "btn btn-primary"><a class="nav-link" href="/driver?eventID=<%=eID%>"><b>I Can Drive</b></a></button>
-      <button class = "btn btn-primary"><a class="nav-link" href="/transportation?eventID=<%=eID%>"><b>Im Looking for a ride!</b></a></button> -->
-    <!-- <form action="<%-"/transportation" + "?eventID=" + eID-%>" method="POST">
-      <div class="mb-3">
-      </div>
-      <button type="submit" value="comment">Want to offer a ride?</button>
-    </form> -->
-    <h1>Comments</h1>
-    <hr/>
-    <div class="row">
-      <div class="col-sm" height="50">
-        <% comment.forEach(element => {%>
-          <body>
-            <a class="nav-link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
-            <%= element.comment %>
-          </body>
-          <hr/>
-        <% }) %>
-      </div>
+      <form action="<%-"/event" + "?id=" + events[0].id-%>" method="POST" style="margin-bottom: 20px">
+          <input type="text" id="comment" name="comment"/>
+        <button class="btn btn-primary" value="comment">Comment</button>
+      </form>
     </div>
-    <form action="<%-"/event" + "?id=" + events[0].id-%>" method="POST" style="margin-bottom: 20px">
-        <input type="text" id="comment" name="comment"/>
-      <button class="btn btn-primary" value="comment">Comment</button>
-    </form>
-  </div>
 </main>
 
 <%- include ('../partials/footer') %>
