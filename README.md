@@ -19,8 +19,6 @@ Link : https://seatgeek.com/account/develop
 In order to have map functionality the user will need a Mapbox Access Token.
 Link: https://account.mapbox.com/auth/signup/
 
-Once you have your access token and client id create a .env file structured as such
-
 ## How to run:
 
 Once the repository is cloned, create a .env file and fill it with the following:
