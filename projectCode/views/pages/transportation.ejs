@@ -1,63 +1,61 @@
-<%- include ('../partials/head') %> <%- include ('../partials/menu') %>
+<%- include ('../partials/head') %>
+<%- include ('../partials/menu') %>
 
 <div class="center">
     <h1 style="text-align: center; margin-top: 80px;">Find nearby rides from others </h1>
 </div>
 
-<div class="container" style="margin-top:50px" id="carpool">
+<div class="container" style="margin-top: 50px" id="carpool">
     <!-- THE REST OF YOUR HTML CODE GOES HERE -->
     <a class="link" href="/event?id=<%=eID%>"><b>Back</b></a>
     <h2>Carpool Offers: </h2>
     <hr/>
-    <div class="overflow-auto">
-    <div class="row">
-      <div class="col-sm" height="200">
-        <% var arr = new Array() %>
-        <% data.forEach(element => {
-          arr[element.carid] = element; %>
-         <%}); %>
-         
-        <% arr.forEach(element => {%>
-            <body>
-              <a class="nav-link" style="font-size: large" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
-              Current Passengers: <%= element.currpass %> / <%= element.maxpass %>
-            </body>
-
-              <div class="mb-3"  id = "joinCarpool">
-                <h6 style="margin-top: 5px;">Riders: 
-                <% for(let i = 0; i < 5; i++){ %>
-                  <% if (element[`pusername${i}`] != null || element[`pusername${i}`] != ''){ %>
-                    <a class="nav-link" href="/profile?username=<%= element[`pusername${i}`] %>"><b><%= element[`pusername${i}`] %></b></a></h6>
-                    <% } %>
-                <%} %>
-                <% if (element.cost != 0) { %>
-                  <h6>Driver is asking : $<%= element.cost %> for pickup (<%= dist[element.carid].toFixed(2) %> miles away).</h6>
-                  
-                  <% } 
-                  else { %>
-                    <h6>Driver is not charging for pickup! (<%= dist[element.carid].toFixed(2) %> miles away).</h6>
-                  <% } %>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        <% data.forEach(element => { %>
+            <div class="col">
+                <div class="card h-125">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                          <a class="nav-link" style="font-size: large" href="/profile?username=<%=element.username%>"><%= element.username %></a></h5>
+                        <p class="card-text">
+                            Current Passengers: <%= element.currpass %> / <%= element.maxpass %>
+                        </p>
+                        <% if (parseFloat(element.cost) !== 0.00) { %>
+                            <h6>Driver is asking : $<%= element.cost %> for pickup (<%= dist[element.carid].toFixed(2) %> miles away).</h6>
+                        <% } else { %>
+                            <h6>Driver is not charging for pickup! (<%= dist[element.carid].toFixed(2) %> miles away).</h6>
+                        <% } %>
+                        <div class="mb-3">
+                          <h6>Riders:</h6>
+                          <% for(let i = 0; i < 5; i++){ %>
+                              <% if (element[`pusername${i}`] != null && element[`pusername${i}`] !== ''){ %>
+                                  <a class="nav-link" href="/profile?username=<%= element[`pusername${i}`] %>">
+                                      <b><%= element[`pusername${i}`] %></b>
+                                  </a><br>
+                              <% } %>
+                          <% } %>
+                      </div>
+                    </div>
+                    <div class="card-footer">
+                        <% if (user == element.pusername0 || user == element.pusername1 || user == element.pusername2 || user == element.pusername3 || user == element.pusername4) { %>
+                            <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + -1%>" method="POST" >
+                                <button type="submit" class="btn btn-danger">Leave</button>
+                            </form>
+                        <% } else if (element.currpass < element.maxpass && dist[element.carid] < element.maxdistpickup) { %>
+                            <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + 1%>" method="POST" >              
+                                <button type="submit" class="btn btn-primary">Join ride!</button>
+                            </form>
+                        <% } else if (dist[element.carid] > element.maxdistpickup) { %>
+                            <h6>Sorry, You are outside the driver's maximum pickup distance.</h6>
+                        <% } else if (element.currpass > element.maxpass) { %>
+                            <h6>Sorry, the car is full.</h6>
+                        <% } %>
+                    </div>
                 </div>
-                <% if (user == element.pusername0 || user == element.pusername1 || user == element.pusername2 || user == element.pusername3 || user == element.pusername4) { %>
-                  <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + -1%>" method="POST" >
-                    <button type="submit" class = "btn btn-danger">Leave</button>
-                  </form>
-                  <%}
-                else if (element.currpass < element.maxpass && dist[element.carid] < element.maxdistpickup) { %>
-                  <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + 1%>" method="POST" >              
-                    <button type="submit" class = "btn btn-primary">Join ride!</button>
-                  </form>
-                <% }
-                else if (dist[element.carid] > element.maxdistpickup) { %>
-                  <h6>Sorry, You are outside the driver's maximum pickup distance.</h6>
-                <% } 
-                else if (element.currpass > element.maxpass) { %>
-                  <h6>Sorry, the car is full.</h6>
-                <% } %>
-            <hr/>
-          <% }) %>
-          <p>If you want to offer others a ride, click <a href="/driver?id=<%=eID%>">here</a></p>
-        </div>
+            </div>
+        <% }) %>
+        
     </div>
+    <p style="text-align: center; padding-top: 20px">If you want to offer others a ride, click <a href="/driver?id=<%=eID%>">here</a></p>
 </div>
 <%- include ('../partials/footer') %>

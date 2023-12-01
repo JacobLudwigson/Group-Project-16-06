@@ -125,3 +125,24 @@
     </div>
 </main>
 <% include('../partials/footer') %>
+
+<script>
+  function adjustTitleFontSize() {
+      const cardTitles = document.querySelectorAll('.card-title');
+
+      cardTitles.forEach(cardTitle => {
+          const length = cardTitle.textContent.length;
+          const cardBody = cardTitle.closest('.card-body');
+          const availableWidth = cardBody.clientWidth; // Available width within the card body
+          const defaultFontSize = 3; // Default font size for shorter text
+
+          // Calculate font size based on available width and text length
+          const calculatedFontSize = Math.min(availableWidth / (length * 5), defaultFontSize);
+
+          cardTitle.style.fontSize = `${calculatedFontSize}em`; // Set the calculated font size
+      });
+  }
+
+  window.addEventListener('load', adjustTitleFontSize);
+  window.addEventListener('resize', adjustTitleFontSize);
+</script>
