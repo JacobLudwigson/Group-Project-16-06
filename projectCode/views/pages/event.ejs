@@ -3,10 +3,11 @@
 
 <main>
     <div class = "container-fluid" id = "indEventCont">
-        <div class = "container" id = "indEventPic" style = "position:absolute;top:70px; left:90px; height: 200px; width:200px;">
-            <img src = "<%-events[0].performers[0].image-%>" height = "270px" width = "350px" alt = "Artist picture" style="border: 5px solid #2f2d2d">
+        <div class = "container" id = "indEventPic">
+            <img src = "<%-events[0].performers[0].image-%>" alt = "Artist picture">
+            <%-user.first_name%>
         </div> 
-        <div class = "container" id = "eventHeader" style = "position:absolute;top:65px; left:500px;">
+        <div class = "container" id = "eventHeader">
             <h1><%-events[0].performers[0].name-%></h1>
             <h6><%-events[0].venue.city-%>, <%-events[0].venue.state-%></h6>
             <h6><%- events[0].venue.name %></h6>
@@ -18,7 +19,7 @@
 
         <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
         <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
-        <div id="map" style="background-color:#292929; position:absolute;top:75px;right:100px; height: 300px; width:450px;border: 5px solid #2f2d2d" class="map_canvas-in mapboxgl-map"></div>
+        <div id="map" class="map_canvas-in mapboxgl-map"></div>
         <!-- <div id="map" "></div> -->
         
     
@@ -50,9 +51,9 @@
         </script>
     
     </div>
-    <div class = "container-fluid" style = "margin-left: 207px; margin-top: 300px;">
-      <button class = "btn btn-primary" style="position: absolute;left: 100px;"><a class="nav-link" href="/driver?eventID=<%=eID%>"><b>I Can Drive</b></a></button>
-      <button class = "btn btn-primary"><a class="nav-link" href="/transportation?eventID=<%=eID%>"><b>Im Looking for a ride!</b></a></button>
+    <div class = "container-fluid" style = "margin-left: 300px; margin-top: 240px;">
+      <button class = "btn btn-primary" style="width: 297px;"><a class="nav-link" href="/driver?eventID=<%=eID%>"><b>I Can Drive</b></a></button>
+      <button class = "btn btn-primary" style="width: 297px;"><a class="nav-link" href="/transportation?eventID=<%=eID%>"><b>Im Looking for a ride!</b></a></button>
     </div>
   <div class="container" id="commentSection" >
     <!-- THE REST OF YOUR HTML CODE GOES HERE -->
@@ -67,7 +68,6 @@
     </form> -->
     <h1>Comments</h1>
     <hr/>
-    <div class="overflow-auto">
     <div class="row">
       <div class="col-sm" height="50">
         <% comment.forEach(element => {%>
@@ -79,7 +79,6 @@
         <% }) %>
       </div>
     </div>
-  </div>
     <form action="<%-"/event" + "?id=" + events[0].id-%>" method="POST" style="margin-bottom: 20px">
         <input type="text" id="comment" name="comment"/>
       <button class="btn btn-primary" value="comment">Comment</button>

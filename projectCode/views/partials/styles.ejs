@@ -15,7 +15,6 @@
     .card-title
     {
         color: rgb(46, 46, 46);
-        font-size: 30px;
         font-weight: 600;
     }
     .card
@@ -23,12 +22,14 @@
         font-size: 12px;
         font-weight: 400;
         border-radius: 20px;
-        width: 250px;
+        width: 280px;
         height: 400px;
         box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1)
     }
     .card-text
     {
+        line-height: .875em;
+        font-size: 1.75em;
         color: rgb(73, 73, 73);
     }
     .card-body a
@@ -64,7 +65,26 @@
         border-radius: 10px;
         font-family: Georgia, serif;
         margin-top: 20px;
+        max-width: 600px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        margin-left: 310px;
+        max-height: 535px;
+        -ms-overflow-style: none; 
+        scrollbar-width: none
     }
+    #commentSection::-webkit-scrollbar {
+        display: none;
+    }
+    #map {
+        background-color: #292929;
+        position: absolute;
+        top: 75px;
+        right: 200px;
+        height: 815px;
+        width: 800px;
+        border-radius: 10px;
+        }
     #information
     {
         background-color: lightblue;
@@ -72,17 +92,55 @@
     }
     #carpool
     {
-        border: 1px solid lightblue;
-        background-color: lightblue;
         border-radius: 10px;
         font-family: Georgia, serif;
         margin-top: 20px;
+        max-width: 1200px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        margin-left: 310px;
+        max-height: 800px;
+        -ms-overflow-style: none; 
+        scrollbar-width: none
     }
-    .center {
-  /* border: 5px solid; */
-  margin: auto;
-  width: 50%;
-  padding: 10px;
-}
-    
+    #carpool::-webkit-scrollbar {
+        display: none;
+    }
+    .riders-names {
+        max-height: 100px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        -ms-overflow-style: none; 
+        scrollbar-width: none
+    }
+    .riders-names::-webkit-scrollbar {
+        display: none;
+    }
+    #indEventPic {
+        position: absolute;
+        top: 80px;
+        right: 0px;
+        left: 0px;
+    }
+    #indEventPic img{
+        border-radius: 20px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        height: 200px;
+        width: auto;
+    }
+    #eventHeader {
+        position: absolute;
+        top: 80px;
+        right: 0px;
+        left: 600px;
+    }
+
+    #eventHeader h1 {
+        max-width: 300px;
+        word-wrap: break-word;
+    }
+
+    #eventHeader h6 {
+        
+    }
 </style>
