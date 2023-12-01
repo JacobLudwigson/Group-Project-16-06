@@ -38,9 +38,10 @@
                     <div class="col-md-6"><label class="labels">Last Name</label><input type="last_name" id="last_name" name="last_name" class = "form-control" value = "<%-user.last_name -%>"/></div>
                 </div>
                 <div class="row mt-3">
+                    <div class="col-md-12"><label class="labels">Email</label><input type="text" id="email" name="email" class = "form-control" value = "<%-user.email -%>"/></div>
                     <div class="col-md-12"><label class="labels">Biography</label><input type="bio" id="bio" name="bio" class = "form-control" value = "<%-user.bio -%>"/></div>
                     <div class="col-md-12"><label class="labels">Profile Picture</label><input type="url" id="profilePic" name="profilePic" class = "form-control" value = "<%-user.profile_pic_path-%>"/></div>
-                    <div class="col-md-6"><label class="labels">Address</label><input type="address" class="form-control" id = "address" name = "address" value = "<%-user.address -%>"></div>
+                    <div class="col-md-6"><label class="labels">Address</label><input type="address" required class="form-control" id = "address" name = "address" value = "<%-user.address -%>"></div>
                     <div class="col-md-6"><label class="labels">State</label><input type="text" class="form-control" id = "state" name ="state" value = "<%-user.state -%>"></div>
                     <div class="col-md-6"><label class="labels">Country</label><input type="text" class="form-control" id = "Country" name = "Country" value = "<%-user.country -%>"></div>                </div>
                 <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Save Profile</button></div>

@@ -15,39 +15,40 @@
          
         <% arr.forEach(element => {%>
             <body>
-              <a class="link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
+              <a class="nav-link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
               <%= element.currpass %> / <%= element.maxpass %>
             </body>
 
               <div class="mb-3"  id = "joinCarpool">
+                <h6>Riders: 
+                <% for(let i = 0; i < 5; i++){ %>
+                  <% if (element[`pusername${i}`] != null || element[`pusername${i}`] != ''){ %>
+                    <a class="nav-link" href="/profile?username=<%= element[`pusername${i}`] %>"><b><%= element[`pusername${i}`] %></b></a></h6>
+                    <% } %>
+                <%} %>
                 <% if (element.cost != 0) { %>
-                  Driver is asking : $<%= element.cost %> for pickup.
+                  <h6>Driver is asking : $<%= element.cost %> for pickup (<%= dist[element.carid].toFixed(2) %> miles away).</h6>
+                  
+                  <% } 
+                  else { %>
+                    <h6>Driver is not charging for pickup! (<%= dist[element.carid].toFixed(2) %> miles away).</h6>
                   <% } %>
                 </div>
-                <% //if(element.pusername0) {%>
-                    <%= //element.pusername0%>
-                <%///}%>
-                <% //if(element.pusername1) {%>
-                    <%=//element.pusername1%>
-                <% //}%>
-                <%// if(element.pusername2) {%>
-                    <%= //element.pusername2%>
-                <%//}%>
-                <% //if(element.pusername3) {%>
-                    <%=// element.pusername3%>
-                <%//}%>
-                <% //if(element.pusername4) {%>
-                    <%=// element.pusername4%>
-                <%// }%>
                 <% if (user == element.pusername0 || user == element.pusername1 || user == element.pusername2 || user == element.pusername3 || user == element.pusername4) { %>
                   <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + -1%>" method="POST" >
                     <button type="submit" class = "btn btn-danger">Leave</button>
                   </form>
                   <%}
-                else if (element.currpass < element.maxpass) { %>
-                  <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + 1%>" method="POST" >              
+                else if (element.currpass < element.maxpass && dist[element.carid] < element.maxdistpickup) { %>
+                  <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + 1%>" method="POST" style="margin-bottom: 120px">              
                     <button type="submit" class = "btn btn-primary">Join</button>
                   </form>
+                <% }
+                else if (dist[element.carid] > element.maxdistpickup) { %>
+                  <h6>Sorry, You are outside the driver's maximum pickup distance.</h6>
+                <% } 
+                else if (element.currpass > element.maxpass) { %>
+                  <h6>Sorry, the car is full.</h6>
                 <% } %>
             <hr/>
           <% }) %>
