@@ -26,32 +26,17 @@ CREATE TABLE profiles (
     CONSTRAINT fk_username FOREIGN KEY(username) REFERENCES users
 );
 
-CREATE TABLE events (
-    tableEventID SERIAL PRIMARY KEY,
-    eventID INT,
-    datetime_utc TIMESTAMP,
-    state VARCHAR(100),
-    name VARCHAR(100),
-    timezone VARCHAR(100),
-    url VARCHAR(100),
-    locLat DECIMAL(10,4),
-    locLong DECIMAL(10,4),
-    score DECIMAL(10,2),
-    address VARCHAR(100),
-    country VARCHAR(100),
-    capacity INT,
-    city VARCHAR(100),
-    artist VARCHAR(100),
-    imageUrl VARCHAR(255)
-);
-
 CREATE TABLE car (
     carID SERIAL PRIMARY KEY,
     eventID INT,
     username VARCHAR(50),
-    numPass INT,
-    Pusername VARCHAR(50),
+    maxPass INT DEFAULT 0,
+    currPass INT DEFAULT 0,
+    maxDistPickup DECIMAL(10,2) DEFAULT 0,
+    cost DECIMAL(10,2) DEFAULT 0.0,
+    Pusername0 VARCHAR(50),
     Pusername1 VARCHAR(50),
     Pusername2 VARCHAR(50),
-    Pusername3 VARCHAR(50)
+    Pusername3 VARCHAR(50),
+    Pusername4 VARCHAR(50)
 );

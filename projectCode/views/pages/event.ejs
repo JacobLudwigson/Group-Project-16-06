@@ -4,12 +4,12 @@
 <main>
     <div class = "container-fluid" id = "indEventCont">
         <div class = "container" id = "indEventPic" style = "position:absolute;top:120px; right: 80px; left:20px; height: 200px; width:200px;">
-            <img src = "<%-event.imageurl%>" height = "200px" width = "200px" alt = "Artist picture">
+            <img src = "<%-events[0].performers[0].image-%>" height = "200px" width = "200px" alt = "Artist picture">
             <%-user.first_name%>
         </div> 
         <div class = "container" id = "eventHeader">
-            <h1><%-event.artist%></h1>
-            <h6><%-event.state%></h6>
+            <h1><%-events[0].performers[0].name-%></h1>
+            <h6><%-events[0].venue.state-%></h6>
 
             
         </div>
@@ -25,7 +25,7 @@
     
        
         <script>
-            mapboxgl.accessToken = 'pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg';
+                mapboxgl.accessToken = '<%=process.env.access_token %>';
         const map = new mapboxgl.Map({
         container: 'map',
         // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
@@ -42,19 +42,36 @@
         direc,
         'top-right'
         );
+        direc.on('route', function (event) {
+        // if (event.route && event.route[0] && event.route[0].distance) {
+            const distanceInMeters = event.route[0].distance;
+            const distanceInMiles = distanceInMeters * 0.000621371; // Convert meters to miles
+            console.log('Distance: ' + distanceInMiles.toFixed(2) + ' miles');
+        // }
+        });
         direc.setOrigin('<%-user.address%>');
         // console.log('<%-user.name %>');
-        direc.setDestination('<%-event.address%>');
-        // console.log(<%=event.address %>);
+        direc.setDestination('<%-events[0].venue.address%>');
+        // console.log(<%=events[0].venue.address %>);
+        console.log(direc);
 
         </script>
     
     </div>
     <div class = "container-fluid">
 
-    </div>    
+    </div>
   <div class="container" style="margin-top:200px">
     <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+      <div class="mb-3">
+      </div>
+      <button class = "btn btn-primary"><a class="nav-link" href="/driver?eventID=<%=eID%>"><b>I Can Drive</b></a></button>
+      <button class = "btn btn-primary"><a class="nav-link" href="/transportation?eventID=<%=eID%>"><b>Im Looking for a ride!</b></a></button>
+    <!-- <form action="<%-"/transportation" + "?eventID=" + eID-%>" method="POST">
+      <div class="mb-3">
+      </div>
+      <button type="submit" value="comment">Want to offer a ride?</button>
+    </form> -->
     <h1>Comments</h1>
     <hr/>
     <div class="overflow-auto">
@@ -70,11 +87,21 @@
       </div>
     </div>
   </div>
-    <form action="<%-"/event" + "?eventID=" + eID-%>" method="POST" style="margin-bottom: 120px">
+    <form action="<%-"/event" + "?id=" + events[0].id-%>" method="POST" style="margin-bottom: 120px">
       <div class="mb-3">
         <input type="text" id="comment" name="comment"/>
       </div>
       <button type="submit" value="comment">Submit</button>
+      <!-- <div class="form-check">
+        <input type="checkbox" id="myCheck" onclick="myFunction()">
+        Offering a ride for this event
+        <p id="text" style="display:none">Checkbox is CHECKED!</p>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" id="myCheck" onclick="myFunction()">
+        Looking for a ride
+        <p id="text" style="display:none">Checkbox is CHECKED!</p>
+      </div> -->
     </form>
   </div>
 
