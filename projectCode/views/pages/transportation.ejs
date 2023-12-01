@@ -11,7 +11,11 @@
     <h2>Carpool Offers: </h2>
     <hr/>
     <div class="row row-cols-1 row-cols-md-4 g-4">
-        <% data.forEach(element => { %>
+      <% var arr = new Array() %>
+      <% data.forEach(element => {
+        arr[element.carid] = element; %>
+       <%}); %>
+        <% arr.forEach(element => { %>
             <div class="col">
                 <div class="card h-125">
                     <div class="card-body">
