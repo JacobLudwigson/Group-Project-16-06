@@ -20,7 +20,7 @@ CREATE TABLE profiles (
     username VARCHAR(50),
     state VARCHAR(50),
     Country VARCHAR(50),
-    address VARCHAR(50),
+    address VARCHAR(50) DEFAULT 'Cu Boulder',
     userLat DECIMAL(10,2),
     userLon DECIMAL(10,2),
     CONSTRAINT fk_username FOREIGN KEY(username) REFERENCES users
