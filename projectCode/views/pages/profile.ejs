@@ -38,7 +38,7 @@
                 <div id="map" style = "background-color:#292929; position:absolute;top:60px;right:20px; height: 200px; width:300px;"></div>
                 
                 <script>
-                mapboxgl.accessToken = 'pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg';
+                mapboxgl.accessToken = '<%=process.env.access_token %>';
                 const map = new mapboxgl.Map({
                 container: 'map',
                 // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
