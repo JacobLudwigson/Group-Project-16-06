@@ -41,7 +41,7 @@ Once the connection is successful, navigate to your browser and input into the s
 http://localhost:3000/
 ```
 This should bring you to the EventGO login page. 
-##How to run tests:
+## How to run tests:
 When the docker is run, the tests should appear in the terminal. They should display whether the test have passed or not. 
 
 ## Deployed Application:
