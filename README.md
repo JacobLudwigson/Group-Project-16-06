@@ -42,7 +42,6 @@ http://localhost:3000/
 ```
 This should bring you to the EventGO login page. 
 
-Once logged in, the EventGO page expects the user to input an address before navigating off the edit profile page.
 ## How to run tests:
 Navigate to the package.json file, and at the bottom line, change the line to be:
 ```bash
