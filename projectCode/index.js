@@ -320,6 +320,7 @@ app.post('/editProfile', (req,res) => {
         state = '${req.body.state}',
         Country = '${req.body.Country}',
         address ='${req.body.address}',
+        email = '${req.body.email}',
         userLat = '${retrieve.data.features[0].geometry.coordinates[0]}',
         userLon = '${retrieve.data.features[0].geometry.coordinates[1]}'
         WHERE username = '${req.session.user.username}';`
@@ -953,7 +954,54 @@ app.post('/transportation', (req, res) => {
     res.render('pages/register');
   }
 });
+/* removeComment POST route
 
+query parameters:
+  commentID - integer - commentID stored in database
+Database interaction: 
+  Depends On:
+  comments
+API interaction: 
+  None
+Logic: 
+  -Using commentID and user session variable, remove the comment that the user wishes to delete
+Return Values: 
+  -None, redirect to event page
+  */
+app.post('/removeComment', (req,res)=>{
+  var query = `DELETE FROM comments WHERE username = '${req.session.user.username}' AND commentID = '${req.query.commentID}';`
+  db.any(query)
+    .then(() => {
+      res.redirect('/event' + '?id=' + req.query.eventID);
+    })
+    .catch(() => {
+      res.redirect('/event' + '?id=' + req.query.eventID);
+    })
+});
+/* removeCar POST route
+
+query parameters:
+  carID - integer - carID stored in database
+Database interaction: 
+  Depends On:
+  car
+API interaction: 
+  None
+Logic: 
+  -Using carID and user session variable, remove the comment that the user wishes to delete
+Return Values: 
+  -None, redirect to event page
+  */
+app.post('/removeCar', (req,res)=>{
+  var query = `DELETE FROM car WHERE username = '${req.session.user.username}' AND carID = '${req.query.carID}';`
+  db.any(query)
+    .then(() => {
+      res.redirect('/event' + '?id=' + req.query.eventID);
+    })
+    .catch(() => {
+      res.redirect('/event' + '?id=' + req.query.eventID);
+    })
+});
 
 
 // *****************************************************

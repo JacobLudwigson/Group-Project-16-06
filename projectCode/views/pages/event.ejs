@@ -67,6 +67,11 @@
             <body>
               <a class="nav-link" href="/profile?username=<%=element.username%>"><b><%= element.username%></b></a>
               <%= element.comment %>
+              <% if (element.username == user.username) { %>
+                <form action="/removeComment?commentID=<%=element.commentid%>&eventID=<%=eID%>" style = "float:right" method="POST" >
+                  <button type = "submit" class="btn btn-danger">Remove Comment</button>
+              </form>
+              <%} %>
             </body>
             <hr/>
           <% }) %>
