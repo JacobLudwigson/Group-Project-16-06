@@ -66,11 +66,11 @@
         font-family: Georgia, serif;
         position: relative;
         right: 19.75rem;
-        top: -50.25rem;
+        top: -44.25rem;
         max-width: 600px;
         overflow-y: scroll;
         overflow-x: hidden;
-        max-height: 480px;
+        max-height: 485px;
         -ms-overflow-style: none; 
         scrollbar-width: none;
         word-break: break-word;
@@ -80,14 +80,14 @@
     }
     #ride-buttons{
         position: relative;
-        left: 2rem;
-        top: -51rem;
+        left: 1.25rem;
+        top: -44.75rem;
     }
     #map {
         background-color: #292929;
         position: relative;
-        top: -18rem;
-        left: 50%;
+        /* top: -18rem;
+        left: 50%; */
         height: 730px;
         width: 800px;
         border-radius: 10px;
@@ -126,7 +126,8 @@
     #indEventPic {
         position: relative;
         top: 12px;
-        left: 2rem;
+        right: 30.75rem;
+        max-width: 266.67px;
     }
     #indEventPic img{
         border-radius: 20px;
@@ -137,7 +138,8 @@
     #eventHeader {
         position: relative;
         top: -12rem;
-        left: 20rem;
+        right: 12.5rem; 
+        max-width: 300px;
     }
 
     #eventHeader h1 {
@@ -145,7 +147,91 @@
         word-wrap: break-word;
     }
 
-    #eventHeader h6 {
-        
+    .car-column{
+        position: relative;
+        max-height: 500px;
+        max-width: 640px;
+        padding: 20px;
+        overflow-y: hidden;
+        right: -4.9rem;
+        top: -2rem;
+        scale: 85%;
     }
+    .car-container {
+        position: relative;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        -ms-overflow-style: none; 
+        scrollbar-width: none;
+        max-height: 444px;
+        padding: 20px;
+    }
+    .car-container::-webkit-scrollbar {
+        display: none;
+    }
+    .car-card{
+        position: relative;
+        padding: 0px;
+        margin-right: 10px;
+    }
+    .comment-column {
+        position: relative;
+        max-height: 500px;
+        max-width: 700px;
+        padding: 20px;
+        overflow-y: hidden;
+        scale: 85%;
+        top: -2rem;
+        left: -2.5rem;
+    }
+    .comments-container {
+        max-height: 410px; 
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        margin-top: 28px;
+        position: relative;  
+    }
+    .comments-container::-webkit-scrollbar {
+        display: none;
+    }
+    .comment-card {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        margin-bottom: 10px;
+        width: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative;  
+    }
+    .comments-card::-webkit-scrollbar {
+        display: none;
+    }
+
+    .profile-pic {
+        position: relative;
+        scale: 90%;
+        top: -5rem;
+        right: 8rem;
+
+    }
+    .profile-info {
+        position: relative;
+        scale: 92%;
+        top: -3rem;
+        right: 13.25rem;
+        max-height: 200px;
+
+    }
+    /* .profile-map {
+        background-color:#292929;
+        position:relative;
+        top:15%;
+        right:5%;
+        height: 200px;
+        width: 300px;
+    } */
 </style>

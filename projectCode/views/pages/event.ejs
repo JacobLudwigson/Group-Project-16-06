@@ -2,7 +2,8 @@
 <%- include ('../partials/menu') %>
 
 <main>
-    <div class = "container-fluid" id = "indEventCont">
+  <div class="container" style="position: relative; right: 5rem; max-height: 800px">
+    <div class = "container" id = "indEventCont" style="max-height: 200px">
         <div class = "container" id = "indEventPic">
             <img src = "<%-events[0].performers[0].image-%>" alt = "Artist picture">
         </div> 
@@ -12,7 +13,7 @@
             <h6><%- events[0].venue.name %></h6>
         </div>
     </div>
-    <div class = "container">
+    <div class = "container" style="position: relative; right: -24rem;top: -11.5rem; max-width: 800px; ">
 
         <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
         <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
@@ -82,6 +83,7 @@
         <button class="btn btn-primary" value="comment">Comment</button>
       </form>
     </div>
+  </div>
 </main>
 
 <%- include ('../partials/footer') %>

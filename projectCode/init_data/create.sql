@@ -5,7 +5,7 @@ CREATE TABLE users (
 
 CREATE TABLE comments(
     commentID SERIAL PRIMARY KEY,
-    comment VARCHAR(255),
+    comment TEXT,
     eventID INT,
     username VARCHAR(50),
     CONSTRAINT fk_username FOREIGN KEY(username) REFERENCES users

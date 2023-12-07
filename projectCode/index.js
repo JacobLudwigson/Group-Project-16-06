@@ -216,193 +216,319 @@ Returns:
   -rendered Profile page of username on success
   -Failure reverts to the register page
   */
-app.get('/profile', (req,res) =>{
-  var query = `SELECT * FROM profiles WHERE username = '${req.query.username}';`
-  db.any(query)
-    .then((data) =>{
+  app.get('/profile', async (req, res) => {
+    try {
+      const username = req.query.username;
+      const userQuery = `SELECT * FROM profiles WHERE username = '${username}';`;
+      const userData = await db.any(userQuery);
+  
+      const carQuery = `
+      SELECT * FROM car
+      WHERE username = '${username}'
+      OR Pusername0 = '${username}'
+      OR Pusername1 = '${username}'
+      OR Pusername2 = '${username}'
+      OR Pusername3 = '${username}'
+      OR Pusername4 = '${username}';
+      `;
+      const carData = await db.any(carQuery);
+  
+      const commentsQuery = `SELECT * FROM comments WHERE username = '${username}';`;
+      const commentsData = await db.any(commentsQuery);
+  
+      let seatGeekEventData = [];
+  
+      if (carData.length != 0 || commentsData.length != 0) {
+        // Extract event IDs from carData and commentsData
+        const carEventIDs = carData.map((car) => car.eventid).filter((id) => id !== null);
+        const commentEventIDs = commentsData.map((comment) => comment.eventid).filter((id) => id !== null);
+  
+        // Fetch event details from SeatGeek API for events associated with carData and commentsData
+        const seatGeekEvents = await axios({
+          url: 'https://api.seatgeek.com/2/events',
+          method: 'GET',
+          dataType: 'json',
+          headers: {
+            'Accept-Encoding': 'application/json',
+          },
+          params: {
+            client_id: process.env.API_KEY,
+            id: [...carEventIDs, ...commentEventIDs].join(','),
+          },
+        });
+  
+        seatGeekEventData = seatGeekEvents.data.events;
+        console.log(seatGeekEventData)
+      }
+  
+      // Merge required event details into carData
+      const carWithEventDetails = carData.map((car) => {
+        const eventDetails = seatGeekEventData.find((event) => event.id === car.eventid);
+        const performer = eventDetails?.performers[0]?.name || 'Unknown';
+        const venue = eventDetails?.venue?.name || 'Unknown';
+        const datetimeUtc = eventDetails?.datetime_utc || 'Unknown';
+  
+        return { ...car, performer, venue, datetimeUtc };
+      });
+  
+      // Merge required event details into commentsData
+      const commentsWithEventDetails = commentsData.map((comment) => {
+        const eventDetails = seatGeekEventData.find((event) => event.id === comment.eventid);
+        const performer = eventDetails?.performers[0]?.name || 'Unknown';
+        const venue = eventDetails?.venue?.name || 'Unknown';
+        const datetimeUtc = eventDetails?.datetime_utc || 'Unknown';
+  
+        return { ...comment, performer, venue, datetimeUtc };
+      });
+      
+      console.log(carWithEventDetails)
       res.status(200);
       res.render('pages/profile', {
-        user : data[0]
+        user: userData[0],
+        carData: carWithEventDetails,
+        commentsData: commentsWithEventDetails,
       });
-    })
-    .catch((err) =>{
+    } catch (err) {
       res.status(404);
       console.log(err);
       res.render('pages/register');
-    });
-
-});
-// Below this line Authentication Required
-app.use(auth);
-/* editProfile GET route
-query parameters:
-  none
-Database interaction: 
-  Depends On:
-  Profiles
-API interaction: 
-  None
-Logic: 
-  -using the session variable, return the edit profile page of the user
-Returns: 
-  -editProfile page of user on success
-  -Failure reverts to the profile page
-  */
-app.get('/editProfile', function(req,res){
-  var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
-
-  db.any(query)
-    .then((data)=>{
-      res.status(201);
-      res.render('pages/editProfile', {
-        user : data[0],
-        error : false
-      });
-    })
-    .catch((err)=>{
-      console.log(err);
-      res.status(400);
-      res.render('pages/profile')
-    })
-});
-/* editProfile POST route
-query parameters:
-  none
-body request parameters:
-  first_name,last_name, profilePic,bio,state,Country,address
-Database interaction: 
-  Depends On:
-  Profiles
-API interaction: 
-  Mapbox
-Logic: 
-  -Using the users address, use the mapboxAPI to forward & reverse geocode to give the coordinates of the user
-Returns: 
-  -Profile page of user on success
-  -Failure reverts to the editProfile page previous to submission (can be caused by an invalid address being used)
-  */
-app.post('/editProfile', (req,res) => {
-
-  Address = req.body.address;
-  var Tusername = req.session.user.username;
-  axios({
-    url: `https://api.mapbox.com/search/searchbox/v1/suggest?`,
-    method: 'GET',
-    dataType: 'json',
-    headers: {
-      'Accept-Encoding': 'application/json',
-    },
-    params: {
-      q : Address,
-      access_token : process.env.access_token,
-      session_token : '00bd329c-6af4-4b71-88bd-e916d6b0945d'
     }
-  })
-  .then ((suggest) => {
+  });
+  // Below this line Authentication Required
+  app.use(auth);
+  /* editProfile GET route
+  query parameters:
+    none
+  Database interaction: 
+    Depends On:
+    Profiles
+  API interaction: 
+    None
+  Logic: 
+    -using the session variable, return the edit profile page of the user
+  Returns: 
+    -editProfile page of user on success
+    -Failure reverts to the profile page
+    */
+  app.get('/editProfile', function(req,res){
+    var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+  
+    db.any(query)
+      .then((data)=>{
+        res.status(201);
+        res.render('pages/editProfile', {
+          user : data[0],
+          error : false
+        });
+      })
+      .catch((err)=>{
+        console.log(err);
+        res.status(400);
+        res.render('pages/userProfile')
+      })
+  });
+  /* editProfile POST route
+  query parameters:
+    none
+  body request parameters:
+    first_name,last_name, profilePic,bio,state,Country,address
+  Database interaction: 
+    Depends On:
+    Profiles
+  API interaction: 
+    Mapbox
+  Logic: 
+    -Using the users address, use the mapboxAPI to forward & reverse geocode to give the coordinates of the user
+  Returns: 
+    -Profile page of user on success
+    -Failure reverts to the editProfile page previous to submission (can be caused by an invalid address being used)
+    */
+  app.post('/editProfile', (req,res) => {
+  
+    Address = req.body.address;
+    var Tusername = req.session.user.username;
     axios({
-      url: `https://api.mapbox.com/search/searchbox/v1/retrieve/${suggest.data.suggestions[0].mapbox_id}?`,
+      url: `https://api.mapbox.com/search/searchbox/v1/suggest?`,
       method: 'GET',
       dataType: 'json',
       headers: {
         'Accept-Encoding': 'application/json',
       },
       params: {
+        q : Address,
         access_token : process.env.access_token,
         session_token : '00bd329c-6af4-4b71-88bd-e916d6b0945d'
       }
     })
-    .then((retrieve)=>{
-        var query = `UPDATE profiles
-        SET first_name = '${req.body.first_name}',
-        last_name = '${req.body.last_name}',
-        profile_pic_path = '${req.body.profilePic}',
-        bio = '${req.body.bio}',
-        state = '${req.body.state}',
-        Country = '${req.body.Country}',
-        address ='${req.body.address}',
-        email = '${req.body.email}',
-        userLat = '${retrieve.data.features[0].geometry.coordinates[0]}',
-        userLon = '${retrieve.data.features[0].geometry.coordinates[1]}'
-        WHERE username = '${req.session.user.username}';`
-        db.any(query)
-        .then(() =>{
-          res.status(200);
-          res.redirect('/profile' + "?username=" + Tusername);
-        })
-        .catch((err) =>{
-          console.log(err)
-          var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
-      
+    .then ((suggest) => {
+      axios({
+        url: `https://api.mapbox.com/search/searchbox/v1/retrieve/${suggest.data.suggestions[0].mapbox_id}?`,
+        method: 'GET',
+        dataType: 'json',
+        headers: {
+          'Accept-Encoding': 'application/json',
+        },
+        params: {
+          access_token : process.env.access_token,
+          session_token : '00bd329c-6af4-4b71-88bd-e916d6b0945d'
+        }
+      })
+      .then((retrieve)=>{
+          var query = `UPDATE profiles
+          SET first_name = '${req.body.first_name}',
+          last_name = '${req.body.last_name}',
+          profile_pic_path = '${req.body.profilePic}',
+          bio = '${req.body.bio}',
+          state = '${req.body.state}',
+          Country = '${req.body.Country}',
+          address ='${req.body.address}',
+          email = '${req.body.email}',
+          userLat = '${retrieve.data.features[0].geometry.coordinates[0]}',
+          userLon = '${retrieve.data.features[0].geometry.coordinates[1]}'
+          WHERE username = '${req.session.user.username}';`
           db.any(query)
-            .then((data)=>{
-              res.status(201);
-              res.render('pages/editProfile', {
-                error : true,
-                message : "Must specify a valid address",
-                user : data[0]
-              }); 
-            })
-            .catch((err)=>{
-              console.log(err);
-              res.status(400);
-              res.render('pages/profile')
-            }) 
-        });
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
-  })
-  .catch((err) =>{
-    console.log(err)
-    var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
-
-    db.any(query)
-      .then((data)=>{
-        res.status(201);
-        res.render('pages/editProfile', {
-          error : true,
-          message : "Must specify a valid address",
-          user : data[0]
-        }); 
-      })
-      .catch((err)=>{
-        console.log(err);
-        res.status(400);
-        res.render('pages/profile')
-      }) 
-  });
-});
-/* Profile GET route
-query parameters:
-  username
-Database interaction: 
-  Depends On:
-  Profiles
-API interaction: 
-  None
-Logic: 
-  -Fetch the profile with query username in database
-Returns: 
-  -Rendered profile page
-  */
-app.get('/profile', (req,res) =>{
-  var query = `SELECT * FROM profiles WHERE username = '${req.query.username}';`
-
-  db.any(query)
-    .then((data) =>{
-      res.status(200);
-      res.render('pages/profile', {
-        user : data[0]
-      });
+          .then(() =>{
+            res.status(200);
+            res.redirect('/userProfile' + "?username=" + Tusername);
+          })
+          .catch((err) =>{
+            console.log(err)
+            var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+        
+            db.any(query)
+              .then((data)=>{
+                res.status(201);
+                res.render('pages/editProfile', {
+                  error : true,
+                  message : "Must specify a valid address",
+                  user : data[0]
+                }); 
+              })
+              .catch((err)=>{
+                console.log(err);
+                res.status(400);
+                res.render('pages/userProfile')
+              }) 
+          });
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
     })
     .catch((err) =>{
+      console.log(err)
+      var query = `SELECT * FROM profiles WHERE username = '${req.session.user.username}';`
+  
+      db.any(query)
+        .then((data)=>{
+          res.status(201);
+          res.render('pages/editProfile', {
+            error : true,
+            message : "Must specify a valid address",
+            user : data[0]
+          }); 
+        })
+        .catch((err)=>{
+          console.log(err);
+          res.status(400);
+          res.render('pages/userProfile')
+        }) 
+    });
+  });
+  /* Profile GET route
+  query parameters:
+    username
+  Database interaction: 
+    Depends On:
+    Profiles
+  API interaction: 
+    None
+  Logic: 
+    -Fetch the profile with query username in database
+  Returns: 
+    -Rendered profile page
+    */
+  app.get('/userProfile', async (req, res) => {
+    try {
+      const username = req.session.user.username;
+      const userQuery = `SELECT * FROM profiles WHERE username = '${username}';`;
+      const userData = await db.any(userQuery);
+  
+      const carQuery = `
+      SELECT * FROM car
+      WHERE username = '${username}'
+      OR Pusername0 = '${username}'
+      OR Pusername1 = '${username}'
+      OR Pusername2 = '${username}'
+      OR Pusername3 = '${username}'
+      OR Pusername4 = '${username}';
+      `;
+      const carData = await db.any(carQuery);
+  
+      const commentsQuery = `SELECT * FROM comments WHERE username = '${username}';`;
+      const commentsData = await db.any(commentsQuery);
+  
+      let seatGeekEventData = [];
+  
+      if (carData.length != 0 || commentsData.length != 0) {
+        // Extract event IDs from carData and commentsData
+        const carEventIDs = carData.map((car) => car.eventid).filter((id) => id !== null);
+        const commentEventIDs = commentsData.map((comment) => comment.eventid).filter((id) => id !== null);
+  
+        // Fetch event details from SeatGeek API for events associated with carData and commentsData
+        const seatGeekEvents = await axios({
+          url: 'https://api.seatgeek.com/2/events',
+          method: 'GET',
+          dataType: 'json',
+          headers: {
+            'Accept-Encoding': 'application/json',
+          },
+          params: {
+            client_id: process.env.API_KEY,
+            id: [...carEventIDs, ...commentEventIDs].join(','),
+          },
+        });
+  
+        seatGeekEventData = seatGeekEvents.data.events;
+        console.log(seatGeekEventData)
+      }
+  
+      // Merge required event details into carData
+      const carWithEventDetails = carData.map((car) => {
+        const eventDetails = seatGeekEventData.find((event) => event.id === car.eventid);
+        const performer = eventDetails?.performers[0]?.name || 'Unknown';
+        const venue = eventDetails?.venue?.name || 'Unknown';
+        const datetimeUtc = eventDetails?.datetime_utc || 'Unknown';
+  
+        return { ...car, performer, venue, datetimeUtc };
+      });
+  
+      // Merge required event details into commentsData
+      const commentsWithEventDetails = commentsData.map((comment) => {
+        const eventDetails = seatGeekEventData.find((event) => event.id === comment.eventid);
+        const performer = eventDetails?.performers[0]?.name || 'Unknown';
+        const venue = eventDetails?.venue?.name || 'Unknown';
+        const datetimeUtc = eventDetails?.datetime_utc || 'Unknown';
+  
+        return { ...comment, performer, venue, datetimeUtc };
+      });
+      
+      console.log(carWithEventDetails)
+      res.status(200);
+      res.render('pages/userProfile', {
+        user: userData[0],
+        carData: carWithEventDetails,
+        commentsData: commentsWithEventDetails,
+      });
+    } catch (err) {
       res.status(404);
       console.log(err);
       res.render('pages/register');
-    });
-
-});
+    }
+  });
+    
+    
+  
 
 /* Logout GET route
 query parameters:
@@ -674,64 +800,51 @@ Returns:
   -Empty page if there are no current drivers offering carpool
   -Rendered carpool page with driver information populated as well as distance between user and driver calculated
   */
-app.get('/transportation', (req,res) => {
-  const eID = req.query.eventID
-  const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
-  const userProfQuery = `SELECT * FROM profiles WHERE username = '${req.session.user.username}' LIMIT 1;`
-  var count=0;
-  dist = new Array();
-  db.any(query)
-  .then((data) => {
-    if (data.length == 0){
-      dist = [];
-      res.render('pages/transportation', {
-        data,
-        eID,
-        user : req.session.user.username,
-        dist
-      })
-    }
-    db.one(userProfQuery)
-    .then((userProfData) =>{ 
-    for(let car of data){
-      const drivProfQuery = `SELECT * FROM profiles WHERE username = '${car.username}' LIMIT 1;`
-        db.any(drivProfQuery)
-          .then((driverProfData) =>{
-            axios({
-              url: `https://api.mapbox.com/directions/v5/mapbox/driving/${userProfData.userlat}%2C${userProfData.userlon}%3B${driverProfData[0].userlat}%2C${driverProfData[0].userlon}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=${process.env.access_token}`,
+  app.get('/transportation', async (req, res) => {
+    try {
+      const eID = req.query.eventID;
+      const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
+      const userProfQuery = `SELECT * FROM profiles WHERE username = '${req.session.user.username}' LIMIT 1;`;
+  
+      const userData = await db.one(userProfQuery);
+      const carsData = await db.any(query);
+  
+      const distancePromises = carsData.map((car) => {
+        const drivProfQuery = `SELECT * FROM profiles WHERE username = '${car.username}' LIMIT 1;`;
+        return db.one(drivProfQuery)
+          .then((driverProfData) => {
+            return axios({
+              url: `https://api.mapbox.com/directions/v5/mapbox/driving/${userData.userlat}%2C${userData.userlon}%3B${driverProfData.userlat}%2C${driverProfData.userlon}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=${process.env.access_token}`,
               method: 'GET',
               dataType: 'json',
               headers: {
                 'Accept-Encoding': 'application/json',
               },
             })
-            .then((mapBoxData) =>{
-              var distance = (mapBoxData.data.routes[0].distance/1000)*0.621371192;
-              dist[car.carid] = distance
-              count+=1;
-              if (count == data.length){
-                res.render('pages/transportation', {
-                  data,
-                  eID,
-                  user : req.session.user.username,
-                  dist
-                })
-              }
-            })
-            .catch((err)=>{
-              console.log(err)
-              res.redirect('/event' + '?id=' + req.query.eventID);
-            }); 
-          })
-          .catch((err)=>{
-            console.log(err)
-            res.redirect('/event' + '?id=' + req.query.eventID);
+            .then((mapBoxData) => {
+              const distance = (mapBoxData.data.routes[0].distance / 1000) * 0.621371192;
+              return { carId: car.carid, distance };
+            });
           });
-        }
-
-    })
+      });
+  
+      const distances = await Promise.all(distancePromises);
+      const dist = {};
+      distances.forEach((d) => {
+        dist[d.carId] = d.distance;
+      });
+  
+      res.render('pages/transportation', {
+        data: carsData,
+        eID,
+        user: req.session.user.username,
+        dist,
+      });
+    } catch (err) {
+      console.log(err);
+      res.redirect('/event?id=' + req.query.eventID);
+    }
   });
-});
 /* Transportation POST route
 
 query parameters:
@@ -750,210 +863,91 @@ Logic:
 Return Values: 
   -Transportation page rendered with necessary values fetched from database
   */
-app.post('/transportation', (req, res) => {
-  var puser = ""
-  var pnum;
-  const eID = req.query.eventID
-  //if ct = '-1' the user is trying to leave a car they are already in
-  if (req.query.ct == '-1'){
-    var addQuery = `SELECT * FROM car 
-    WHERE eventID = '${eID}' AND
-    username = '${req.query.username}' LIMIT 1;`
-    var joinUser = req.session.user.username;
-    //find where in the car database the passenger is trying to leave from
-    db.one(addQuery)
-      .then((addQueryData)=>{
-        if (addQueryData.pusername0 == joinUser){pnum=0}
-        else if (addQueryData.pusername1 == joinUser){pnum=1}
-        else if (addQueryData.pusername2 == joinUser){pnum=2}
-        else if (addQueryData.pusername3 == joinUser){pnum=3}
-        else if (addQueryData.pusername4 == joinUser){pnum=4}
-        const querry = `UPDATE car SET Pusername${pnum} = '${puser}', currPass = currPass + ${req.query.ct} WHERE username = '${req.query.username}';`;
-        const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
-        const userProfQuery = `SELECT * FROM profiles WHERE username = '${req.session.user.username}' LIMIT 1;`
-        const drivProfQuery = `SELECT * FROM profiles WHERE username = '${req.query.username}' LIMIT 1;`
-        var count=0;
-        //declare an array to store distance information about the different cars
-        dist = new Array();
-        //Fetch desired car information
-        db.any(query)
-        .then((data) => {
-          //fetch the users profile information (needed for location)
-          db.one(userProfQuery)
-            
-          .then((userProfData) =>{
-          //for each car returned from the car query for this event
-          for(let car of data){
-            const drivProfQuery = `SELECT * FROM profiles WHERE username = '${car.username}' LIMIT 1;`
-              //query the driver of a given car's profile
-              db.any(drivProfQuery)
-                .then((driverProfData) =>{
-                  //using profile information make a mapbox directions call to get a distance estimate
-                  axios({
-                    url: `https://api.mapbox.com/directions/v5/mapbox/driving/${userProfData.userlat}%2C${userProfData.userlon}%3B${driverProfData[0].userlat}%2C${driverProfData[0].userlon}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=pk.eyJ1IjoiamFsdTE4OTUiLCJhIjoiY2xveXY4ZnQwMDdncDJrbXN3YTRjeXFzayJ9.hfGiNqW1aIPZpUe0EEG_fg`,
-                    method: 'GET',
-                    dataType: 'json',
-                    headers: {
-                      'Accept-Encoding': 'application/json',
-                    },
-                  })
-                  .then((mapBoxData) =>{
-                    //convert mapbox meter distance data to miles
-                    var distance = (mapBoxData.data.routes[0].distance/1000)*0.621371192;
-                    //store the respective distance values in an array at carID indexes to avoid asynchronous function call issues
-                    dist[car.carid] = distance
-                    count+=1;
-                    if (count == data.length){
-                      //Once the distance array is fully populated, update the car table with our removed user
-                      db.any(querry)
-                      .then((moredata) => {
-                        //fetch the freshly updated car information based on user
-                        db.any(query)
-                        .then((data) => {
-                          //render the page with our necessary data passed as a json
-                          res.render('pages/transportation', {
-                            eID,
-                            moredata,
-                            data,
-                            user : req.session.user.username,
-                            dist
-                          });
-                        })
-                        .catch((err) =>{
-                          console.log(err)
-                          res.redirect('/event' + '?id=' + req.query.eventID);
-                        });
-                      })
-                      .catch((err) =>{
-                        console.log(err)
-                        res.redirect('/event' + '?id=' + req.query.eventID);
-                      });
-                    }
-                  })
-                  .catch((err) =>{
-                    console.log(err)
-                    res.redirect('/event' + '?id=' + req.query.eventID);
-                  }); 
-                })
-                .catch((err) =>{
-                  console.log(err)
-                  res.redirect('/event' + '?id=' + req.query.eventID);
-                });
-              }
-          })
-          .catch((err) =>{
-            console.log(err)
-            res.redirect('/event' + '?id=' + req.query.eventID);
-          });
-        })
-        .catch((err) =>{
-          console.log(err)
-          res.redirect('/event' + '?id=' + req.query.eventID);
-        });
-      })
-    .catch((err) =>{
-      console.log(err)
-      res.redirect('/event' + '?id=' + req.query.eventID);
-    });
-    //If at any point the necessary information cannot be fetched, redirect the user back to the event page
-  }
-  else if(req.query.ct != '-1') { //if the user is trying to join a carpool
-    var addQuery = `SELECT * FROM car 
-    WHERE eventID = '${eID}' AND
-    username = '${req.query.username}' LIMIT 1;`
-    //Fetch car information
-    db.one(addQuery)
-      .then((addQueryData)=>{
-        puser = req.session.user.username
-        //Find out where the closest slot in the database is to insert the user
-        if (addQueryData.pusername0 == '' || addQueryData.pusername0 == null){pnum=0}
-        else if (addQueryData.pusername1 == '' || addQueryData.pusername1 == null){pnum=1}
-        else if (addQueryData.pusername2 == '' || addQueryData.pusername2 == null){pnum=2}
-        else if (addQueryData.pusername3 == '' || addQueryData.pusername3 == null){pnum=3}
-        else if (addQueryData.pusername4 == '' || addQueryData.pusername4 == null){pnum=4}
-        //from here, the code follows the same logic as the removal of users
-        const querry = `UPDATE car SET Pusername${pnum} = '${puser}', currPass = currPass + ${req.query.ct} WHERE username = '${req.query.username}';`;
-        const query = `SELECT * FROM car WHERE eventID = '${eID}';`;
-        const userProfQuery = `SELECT * FROM profiles WHERE username = '${req.session.user.username}' LIMIT 1;`
-        const drivProfQuery = `SELECT * FROM profiles WHERE username = '${req.query.username}' LIMIT 1;`
-        var count=0;
-        dist = new Array();
-        db.any(query)
-        .then((data) => {
-          db.one(userProfQuery)
-            
-          .then((userProfData) =>{
-            
-          for(let car of data){
-            const drivProfQuery = `SELECT * FROM profiles WHERE username = '${car.username}' LIMIT 1;`
-              db.any(drivProfQuery)
-                .then((driverProfData) =>{
-                  axios({
-                    url: `https://api.mapbox.com/directions/v5/mapbox/driving/${userProfData.userlat}%2C${userProfData.userlon}%3B${driverProfData[0].userlat}%2C${driverProfData[0].userlon}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=${process.env.access_token}`,
-                    method: 'GET',
-                    dataType: 'json',
-                    headers: {
-                      'Accept-Encoding': 'application/json',
-                    },
-                  })
-                  .then((mapBoxData) =>{
-                    var distance = (mapBoxData.data.routes[0].distance/1000)*0.621371192;
-                    dist[car.carid] = distance
-                    count+=1;
-                    if (count == data.length){
-                      db.any(querry)
-                      .then((moredata) => {
-                        db.any(query)
-                        .then((data) => {
-                          res.render('pages/transportation', {
-                            eID,
-                            moredata,
-                            data,
-                            user : req.session.user.username,
-                            dist
-                          });
-                        })
-                        .catch((err) =>{
-                          console.log(err)
-                          res.redirect('/event' + '?id=' + req.query.eventID);
-                        });
-                      })
-                      .catch((err) =>{
-                        console.log(err)
-                        res.redirect('/event' + '?id=' + req.query.eventID);
-                      });
-                    }
-                  })
-                  .catch((err) =>{
-                    console.log(err)
-                    res.redirect('/event' + '?id=' + req.query.eventID);
-                  }); 
-                })
-                .catch((err) =>{
-                  console.log(err)
-                  res.redirect('/event' + '?id=' + req.query.eventID);
-                });
-              }
-          })
-          .catch((err) =>{
-            console.log(err)
-            res.redirect('/event' + '?id=' + req.query.eventID);
-          });
-        })
-        .catch((err) =>{
-          console.log(err)
-          res.redirect('/event' + '?id=' + req.query.eventID);
-        });
-      })
-    .catch((err) =>{
-      console.log(err)
-      res.redirect('/event' + '?id=' + req.query.eventID);
-    });
-  }
-  else {
-    res.render('pages/register');
-  }
-});
+  app.post('/transportation', async (req, res) => {
+    console.log(req.query.eventID)
+    try {
+      const eID = req.query.eventID;
+      const username = req.session.user.username;
+      
+      // Fetch the specific car based on the event ID and username
+      const carQuery = `SELECT * FROM car WHERE eventID = '${eID}' AND username = '${req.query.username}' LIMIT 1;`;
+      const carData = await db.one(carQuery);
+  
+      // Identify the available slot in the car for the user to join
+      let pnum = null;
+      for (let i = 0; i < 5; i++) {
+        if (carData[`pusername${i}`] === '' || carData[`pusername${i}`] === null) {
+          pnum = i;
+          break;
+        }
+      }
+      console.log(pnum)
+      // If there's an available slot, update the specific car with the added user information
+      if (pnum !== null) {
+        const updateQuery = `UPDATE car SET Pusername${pnum} = '${username}', currPass = ${req.query.passengerNum} + ${req.query.ct} WHERE eventID = '${eID}' AND username = '${req.query.username}';`;
+        await db.none(updateQuery);
+      }
+  
+      // Redirect or render your page accordingly
+      res.redirect('/transportation?eventID=' + req.query.eventID);
+    } catch (err) {
+      console.log(err);
+      res.redirect('/event?id=' + req.query.eventID);
+    }
+  });
+  /* Transportation/leave POST route
+
+  query parameters:
+    eventID - Integer : Event Identfication Number for a given seat geek event
+    username - string (0 - 50 characters) : Stores username of the driver's car the current user is trying to join
+    passengerNum - expected values : integer range(1-5). Keeps track of the current number of passengers to given car at function call
+    ct - Expected values : (-1 to leave car)(1 to join)
+  Database interaction: 
+    Depends On:
+    Profiles, car
+  API interaction: 
+    Uses mapbox directions API to fetch a distance estimate between the user and the driver (provided they have profile address information)
+  Logic: 
+    -Depending on query variables, alter the SQL queries to either 1. remove a user from the car or 2. add a user to the car
+    -Pnum determines where in the car database the passenger will be inserted or removed upon join or leave (determined by the slot matching session username for leaves or the first open slot for joins)
+  Return Values: 
+    -Transportation page rendered with necessary values fetched from database
+  */
+  app.post('/transportation/leave', async (req, res) => {
+    try {
+      const eID = req.query.eventID;
+      const username = req.session.user.username;
+  
+      // Fetch the specific car based on the event ID and username
+      const carQuery = `SELECT * FROM car WHERE eventID = '${eID}' AND username = '${req.query.username}' LIMIT 1;`;
+      const carData = await db.one(carQuery);
+  
+      // Find the slot where the user is currently present and remove the user from that slot
+      let pnum = null;
+      for (let i = 0; i < 5; i++) {
+        if (carData[`pusername${i}`] === username) {
+          pnum = i;
+          break;
+        }
+      }
+  
+      // If the user is found in the car, remove them from that slot
+      if (pnum !== null) {
+        const updateQuery = `UPDATE car SET Pusername${pnum} = ${null}, currPass = currPass + ${req.query.ct} WHERE eventID = '${eID}' AND username = '${req.query.username}';`;
+        await db.none(updateQuery);
+      }
+  
+      if ('page' in req.query){
+        res.redirect('/userProfile')
+      } else {
+        res.redirect('/transportation?eventID=' + req.query.eventID);
+      }
+    } catch (err) {
+      console.log(err);
+      res.redirect('/event?id=' + req.query.eventID);
+    }
+  });
+  
 /* removeComment POST route
 
 query parameters:
@@ -972,7 +966,11 @@ app.post('/removeComment', (req,res)=>{
   var query = `DELETE FROM comments WHERE username = '${req.session.user.username}' AND commentID = '${req.query.commentID}';`
   db.any(query)
     .then(() => {
+      if ('page' in req.query){
+        res.redirect('/userProfile')
+      } else {
       res.redirect('/event' + '?id=' + req.query.eventID);
+      }
     })
     .catch(() => {
       res.redirect('/event' + '?id=' + req.query.eventID);
@@ -993,10 +991,16 @@ Return Values:
   -None, redirect to event page
   */
 app.post('/removeCar', (req,res)=>{
+  console.log(req.query.eventID)
   var query = `DELETE FROM car WHERE username = '${req.session.user.username}' AND carID = '${req.query.carID}';`
   db.any(query)
     .then(() => {
-      res.redirect('/event' + '?id=' + req.query.eventID);
+      console.log("removed")
+      if ('page' in req.query){
+        res.redirect('/userProfile')
+      } else {
+        res.redirect('/event' + '?id=' + req.query.eventID);
+      }
     })
     .catch(() => {
       res.redirect('/event' + '?id=' + req.query.eventID);

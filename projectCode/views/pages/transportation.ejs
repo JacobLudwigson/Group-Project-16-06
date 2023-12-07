@@ -42,15 +42,15 @@
                     </div>
                     <div class="card-footer">
                         <% if (user == element.username) { %>
-                          <form action="<%-"/removeCar" + "?carID=" + element.carid + "eventID=" + eID%>"  method="POST" >
+                          <form action="<%-"/removeCar" + "?carID=" + element.carid + "&eventID=" + eID%>"  method="POST" >
                                 <button type="submit" class="btn btn-danger">Delete Offer</button>
                             </form>
                         <% } else if (user == element.pusername0 || user == element.pusername1 || user == element.pusername2 || user == element.pusername3 || user == element.pusername4) { %>
-                            <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + -1%>" method="POST" >
+                            <form action="<%-"/transportation/leave" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + -1 + "&carID=" + element.carID%>" method="POST" >
                                 <button type="submit" class="btn btn-danger">Leave</button>
                             </form>
                         <% } else if (element.currpass < element.maxpass && dist[element.carid] < element.maxdistpickup) { %>
-                            <form action="<%-"/transportation" + "?eventID=" + eID + "&username=" + element.username + "&passengerNum=" + element.currpass + "&ct=" + 1%>" method="POST" >              
+                            <form action="/transportation?eventID=<%= eID %>&username=<%= element.username %>&passengerNum=<%= element.currpass %>&ct=1" method="POST" >              
                                 <button type="submit" class="btn btn-primary">Join ride!</button>
                             </form>
                         <% } else if (dist[element.carid] > element.maxdistpickup) { %>
